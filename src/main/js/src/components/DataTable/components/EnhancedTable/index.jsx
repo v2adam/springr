@@ -110,14 +110,28 @@ class EnhancedTable extends Component {
 
     isSelected = (id) => this.state.selected.indexOf(id) !== -1;
 
+
+    deleteSelectedHandler = () => {
+
+        this.props.deleteSelected(this.state.selected);
+
+        // kinullázom a számlálót
+        this.setState({
+            selected: []
+        })
+    };
+
+
     render() {
-        const {classes} = this.props;
+        const {classes, tableTitle, deleteSelected} = this.props;
         const {data, order, orderBy, selected, rowsPerPage, page} = this.state;
         const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
 
         return (
             <Paper className={classes.root}>
-                <EnhancedTableToolbar numSelected={selected.length} title="Employees"/>
+                <EnhancedTableToolbar numSelected={selected.length}
+                                      title={tableTitle}
+                                      deleteHandler={this.deleteSelectedHandler}/>
                 <div className={classes.tableWrapper}>
                     <Table className={classes.table}>
                         <EnhancedTableHead
@@ -178,11 +192,14 @@ class EnhancedTable extends Component {
 
 EnhancedTable.propTypes = {
     classes: PropTypes.object.isRequired,
-    tableContent: PropTypes.array.isRequired
+    tableContent: PropTypes.array.isRequired,
+    tableTitle: PropTypes.string,
+    deleteSelected: PropTypes.func.isRequired
 };
 
 EnhancedTable.defaultProps = {
-    tableContent: []
+    tableContent: [],
+    tableTitle: ''
 };
 
 export default withStyles(tableStyles)(EnhancedTable);

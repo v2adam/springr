@@ -12,15 +12,21 @@ export default class DataTable extends Component {
 
     render() {
         return (
-            <EnhancedTable tableContent={this.props.tableContent}/>
+            <EnhancedTable
+                tableContent={this.props.tableContent}
+                tableTitle={this.props.tableTitle}
+                deleteSelected={this.props.deleteSelected}/>
         );
     }
 }
 
 DataTable.propTypes = {
     tableContent: PropTypes.array.isRequired,
+    tableTitle: PropTypes.string,
+    deleteSelected: PropTypes.func.isRequired
 };
 
 DataTable.defaultProps = {
-    tableContent: []
+    tableContent: [],
+    tableTitle: ''
 };

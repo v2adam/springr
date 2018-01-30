@@ -9,6 +9,8 @@ import FilterListIcon from 'material-ui-icons/FilterList';
 import {lighten} from 'material-ui/styles/colorManipulator';
 import {withStyles} from "material-ui/styles/index";
 import classNames from "classnames";
+import Button from 'material-ui/Button';
+import AddIcon from 'material-ui-icons/Add';
 
 const toolbarStyles = theme => ({
     root: {
@@ -35,10 +37,11 @@ const toolbarStyles = theme => ({
     },
 });
 
+
 class EnhancedTableToolbar extends Component {
 
     render() {
-        const {numSelected, classes} = this.props;
+        const {numSelected, classes, deleteHandler} = this.props;
 
         return (
             <Toolbar
@@ -57,15 +60,15 @@ class EnhancedTableToolbar extends Component {
                 <div className={classes.actions}>
                     {numSelected > 0 ? (
                         <Tooltip title="Delete">
-                            <IconButton aria-label="Delete">
+                            <IconButton aria-label="Delete" onClick={this.props.deleteHandler}>
                                 <DeleteIcon/>
                             </IconButton>
                         </Tooltip>
                     ) : (
-                        <Tooltip title="Filter list">
-                            <IconButton aria-label="Filter list">
-                                <FilterListIcon/>
-                            </IconButton>
+                        <Tooltip id="tooltip-fab" className={classes.fab} title="Add">
+                            <Button fab color="secondary" aria-label="Add">
+                                <AddIcon />
+                            </Button>
                         </Tooltip>
                     )}
                 </div>
@@ -79,6 +82,7 @@ EnhancedTableToolbar.propTypes = {
     classes: PropTypes.object.isRequired,
     numSelected: PropTypes.number.isRequired,
     title: PropTypes.string.isRequired,
+    deleteHandler: PropTypes.func.isRequired
 };
 
 export default withStyles(toolbarStyles)(EnhancedTableToolbar);
