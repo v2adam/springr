@@ -36,9 +36,6 @@ export default class MainPage extends Component {
                     <Button disabled href="/">
                         Link disabled
                     </Button>
-                    <Button dense>
-                        Dense
-                    </Button>
                     <Button data-something="here I am">
                         Does something
                     </Button>

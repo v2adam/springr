@@ -50,7 +50,7 @@ class EnhancedTableToolbar extends Component {
                     {numSelected > 0 ? (
                         <Typography type="subheading">{numSelected} selected</Typography>
                     ) : (
-                        <Typography type="title">Nutrition</Typography>
+                        <Typography type="title">{this.props.title}</Typography>
                     )}
                 </div>
                 <div className={classes.spacer}/>
@@ -78,6 +78,7 @@ class EnhancedTableToolbar extends Component {
 EnhancedTableToolbar.propTypes = {
     classes: PropTypes.object.isRequired,
     numSelected: PropTypes.number.isRequired,
+    title: PropTypes.string.isRequired,
 };
 
 export default withStyles(toolbarStyles)(EnhancedTableToolbar);
