@@ -2,7 +2,7 @@ var path = require('path');
 const webpack = require('webpack');
 
 module.exports = {
-    entry: './src/main/js/src/index.js',
+    entry: ['babel-polyfill', './src/main/js/src/index.js'],
     cache: true,
     output: {
         path: __dirname,
@@ -17,7 +17,7 @@ module.exports = {
                 loader: 'babel-loader',
                 query: {
                     cacheDirectory: true,
-                    presets: ['es2015', 'react'],
+                    presets: ['es2015', 'react',  "stage-0", "stage-3"],
                     plugins: ['transform-class-properties']
                 }
             },
