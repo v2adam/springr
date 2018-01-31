@@ -5,7 +5,6 @@ import Typography from 'material-ui/Typography';
 import IconButton from 'material-ui/IconButton';
 import Tooltip from 'material-ui/Tooltip';
 import DeleteIcon from 'material-ui-icons/Delete';
-import FilterListIcon from 'material-ui-icons/FilterList';
 import {lighten} from 'material-ui/styles/colorManipulator';
 import {withStyles} from "material-ui/styles/index";
 import classNames from "classnames";
@@ -66,8 +65,8 @@ class EnhancedTableToolbar extends Component {
                         </Tooltip>
                     ) : (
                         <Tooltip id="tooltip-fab" className={classes.fab} title="Add">
-                            <Button fab color="secondary" aria-label="Add">
-                                <AddIcon />
+                            <Button fab color="secondary" aria-label="Add" onClick={this.props.addNew}>
+                                <AddIcon/>
                             </Button>
                         </Tooltip>
                     )}
@@ -82,7 +81,8 @@ EnhancedTableToolbar.propTypes = {
     classes: PropTypes.object.isRequired,
     numSelected: PropTypes.number.isRequired,
     title: PropTypes.string.isRequired,
-    deleteHandler: PropTypes.func.isRequired
+    deleteHandler: PropTypes.func.isRequired,
+    addNew: PropTypes.func.isRequired
 };
 
 export default withStyles(toolbarStyles)(EnhancedTableToolbar);

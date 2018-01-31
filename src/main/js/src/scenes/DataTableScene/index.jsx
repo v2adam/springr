@@ -22,7 +22,7 @@ export default class DataTableScene extends Component {
 
 
     fetchData = () => {
-        axios.get('/my_api/store_employee').then(res => {
+        axios.get('/my_api/employees').then(res => {
             this.setState({
                 tableData: res.data
             });
@@ -31,10 +31,6 @@ export default class DataTableScene extends Component {
 
 
     deleteSelected = async (selected) => {
-
-        console.log('torles itt: ' + selected);
-
-
         const opts = {
             headers: {
                 'Content-Type': 'application/json',
@@ -42,15 +38,19 @@ export default class DataTableScene extends Component {
         };
 
         try {
-            const res = await axios.patch('/my_api/store_employee', JSON.stringify(selected), opts);
+            const res = await axios.patch('/my_api/employees', JSON.stringify(selected), opts);
         } catch (err) {
             console.log(`PATCH baj van: ${err}`);
         }
 
         this.fetchData();
-
     };
 
+
+    addNew = async () => {
+        await axios.post('/my_api/employees').catch(err => console.log(err));
+        this.fetchData();
+    };
 
     render() {
 
@@ -63,7 +63,8 @@ export default class DataTableScene extends Component {
                 <DataTable key="key1"
                            tableContent={tableData}
                            tableTitle="my title"
-                           deleteSelected={this.deleteSelected}/>,
+                           deleteSelected={this.deleteSelected}
+                           addNew={this.addNew}/>,
                 <h1 key="key2">Bottom</h1>
             ]
         );

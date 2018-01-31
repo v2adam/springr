@@ -15,7 +15,8 @@ export default class DataTable extends Component {
             <EnhancedTable
                 tableContent={this.props.tableContent}
                 tableTitle={this.props.tableTitle}
-                deleteSelected={this.props.deleteSelected}/>
+                deleteSelected={this.props.deleteSelected}
+                addNew={this.props.addNew}/>
         );
     }
 }
@@ -23,7 +24,8 @@ export default class DataTable extends Component {
 DataTable.propTypes = {
     tableContent: PropTypes.array.isRequired,
     tableTitle: PropTypes.string,
-    deleteSelected: PropTypes.func.isRequired
+    deleteSelected: PropTypes.func.isRequired,
+    addNew: PropTypes.func.isRequired
 };
 
 DataTable.defaultProps = {
