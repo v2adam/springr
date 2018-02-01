@@ -3,12 +3,13 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {Route, Switch, withRouter} from 'react-router';
 import MainPage from "./scenes/MainPage";
-import TableDemo from "./scenes/TableDemo";
 import PageNotFound from "./scenes/PageNotFound";
-import withRoot from "./withRoot";
 import NavBar from "./components/NavBar";
-import SimpleTable from "./scenes/SimpleTable";
-import DataTableScene from "./scenes/DataTableScene";
+import Page1 from "./scenes/Page1";
+import Page2 from "./scenes/Page2";
+import Page3 from "./scenes/Page3";
+import Page4 from "./scenes/Page4";
+import Page5 from "./scenes/Page5";
 
 class App extends Component {
     render() {
@@ -17,9 +18,11 @@ class App extends Component {
                 <NavBar key="navBarKey"/>,
                 <Switch key="switchKey">
                     <Route exact path="/" component={MainPage}/>
-                    <Route path="/react/demo_table" component={TableDemo}/>
-                    <Route path="/react/simple_table" component={SimpleTable}/>
-                    <Route path="/react/datatable" component={DataTableScene}/>
+                    <Route path="/react/page1" component={Page1}/>
+                    <Route path="/react/page2" component={Page2}/>
+                    <Route path="/react/page3" component={Page3}/>
+                    <Route path="/react/page4" component={Page4}/>
+                    <Route path="/react/page5" component={Page5}/>
                     <Route component={PageNotFound}/>
                     {/*<Redirect to="/404"/>*/}
                 </Switch>
@@ -37,7 +40,7 @@ function mapDispatchToProps(dispatch) {
     return bindActionCreators({}, dispatch);
 }
 
-export default withRoot(withRouter(connect(mapStateToProps, mapDispatchToProps)(App)));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));
 
 App.propTypes = {};
 

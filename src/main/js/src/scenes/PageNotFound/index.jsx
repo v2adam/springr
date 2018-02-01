@@ -6,7 +6,7 @@ const PageNotFound = (props) => (
     <Grid textAlign='center'>
         <Grid.Column>
             <h1>Page not found</h1>
-            <li><NavLink activeClassName="active" to="/js/many_example">Many example</NavLink></li>
+            <li><NavLink activeClassName="active" to="/">Home</NavLink></li>
         </Grid.Column>
     </Grid>
 );

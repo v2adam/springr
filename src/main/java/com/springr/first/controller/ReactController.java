@@ -7,13 +7,7 @@ import com.springr.first.service.EmployeeService;
 import com.springr.first.service.auth.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/my_api")
@@ -40,37 +34,23 @@ public class ReactController {
         return userService.findByUserName("user");
     }
 
-
-    @RequestMapping(value = "store_employee", method = RequestMethod.GET)
-    public Iterable<Employee> listEmployee() {
+    @RequestMapping(value = "employees", method = RequestMethod.GET)
+    public Iterable<Employee> findAll() {
         return employeeService.findAll();
     }
 
-
-    @RequestMapping(value = "store_employee", method = RequestMethod.POST)
-    public void storeEmployee(@RequestBody Employee employee) {
-        employeeService.save(employee);
+    @RequestMapping(value = "employees/{id}", method = RequestMethod.GET)
+    public Employee findOne(@PathVariable("id") Long id) {
+        return employeeService.findOne(id);
     }
 
-
-    @RequestMapping(value = "store_all_employee", method = RequestMethod.POST)
-    public void storeAllEmployee(@RequestBody Iterable<Employee> employees) {
-        List<Employee> input = new ArrayList<>();
-        employees.forEach(
-                p -> {
-                    p.setId(null);
-                    input.add(p);
-                }
-        );
-        employeeService.save(input);
+    @RequestMapping(value = "employees", method = RequestMethod.POST)
+    public Employee createNew() {
+        return employeeService.createNew();
     }
 
-
-    @RequestMapping(value = "store_employee", method = RequestMethod.PATCH)
-    public void removeEmployee(@RequestBody Iterable<Long> employeeID) {
-        System.out.println("PATCH van");
-        System.out.println(employeeID.toString());
-
+    @RequestMapping(value = "employees", method = RequestMethod.PATCH)
+    public void removeSelectedEmployees(@RequestBody Iterable<Long> employeeID) {
         employeeService.remove(employeeID);
     }
 

@@ -1,13 +1,13 @@
 import React, {Component} from 'react';
 
 
-export default class MainPage extends Component {
+export default class Page4 extends Component {
 
 
     render() {
         return (
             <div>
-                <h1>Main page</h1>
+                <h1>Page4</h1>
             </div>
         );
     }

@@ -1,8 +1,5 @@
 import React, {Component} from 'react';
-import AppBar from 'material-ui/AppBar';
-import Tabs, {Tab} from 'material-ui/Tabs';
 import history from '../../misc/history';
-import DataTable from "../../scenes/DataTableScene";
 
 export default class NavBar extends Component {
 
@@ -28,17 +25,24 @@ export default class NavBar extends Component {
                 break;
 
             case 2:
-                history.push('/react/demo_table');
+                history.push('/react/page1');
                 break;
 
             case 3:
-                history.push('/react/simple_table');
+                history.push('/react/page2');
                 break;
 
             case 4:
-                history.push('/react/datatable');
+                history.push('/react/page3');
                 break;
 
+            case 5:
+                history.push('/react/page4');
+                break;
+
+            case 6:
+                history.push('/react/page5');
+                break;
 
             default:
                 history.push(`/404`);
@@ -49,16 +53,8 @@ export default class NavBar extends Component {
 
     render() {
         return (
-            <AppBar position="static">
-                <Tabs value={this.state.selected} onChange={this.handleChange}>
-                    <Tab label="WebSiteLogo" href="/"/>
-                    <Tab label="Home"/>
-                    <Tab label="Table demo"/>
-                    <Tab label="Simple table"/>
-                    <Tab label="Datatable"/>
-                </Tabs>
-            </AppBar>
-        );
+            <h1>Navbar</h1>
+        )
     }
 
 }

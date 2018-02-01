@@ -19,6 +19,27 @@ public class EmployeeServiceImpl implements EmployeeService {
         this.employeeRepository = employeeRepository;
     }
 
+
+    // GET
+    @Override
+    public Iterable<Employee> findAll() {
+        return employeeRepository.findAll();
+    }
+
+    @Override
+    public Employee findOne(Long id) {
+        return employeeRepository.findOne(id);
+    }
+
+
+    // POST
+    @Override
+    public Employee createNew() {
+        Employee e = new Employee();
+        return employeeRepository.save(e);
+    }
+
+
     @Override
     public Iterable<Employee> save(Iterable<Employee> employees) {
         return employeeRepository.save(employees);
@@ -29,10 +50,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeRepository.save(employee);
     }
 
-    @Override
-    public Iterable<Employee> findAll() {
-        return employeeRepository.findAll();
-    }
 
     @Override
     public void remove(Iterable<Long> employees) {
