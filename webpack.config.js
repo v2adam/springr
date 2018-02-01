@@ -18,7 +18,11 @@ module.exports = {
                 query: {
                     cacheDirectory: true,
                     presets: ['es2015', 'react'],
-                    plugins: ['transform-class-properties']
+                    plugins: [
+                        ['transform-class-properties'],
+                        ['import', { 'libraryName': 'antd', 'libraryDirectory': 'es', 'style': 'css' }] // `style: true` for less
+
+                    ]
                 }
             },
             {
