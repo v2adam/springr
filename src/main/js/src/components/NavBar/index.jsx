@@ -1,46 +1,49 @@
-import React, {Component} from 'react';
+import React from 'react';
+import {Icon, Menu} from 'antd';
 import history from '../../misc/history';
 
-export default class NavBar extends Component {
-
-    constructor(props) {
-        super(props);
-        this.state = {
-            selected: 0
-        }
-    }
+const SubMenu = Menu.SubMenu;
+const MenuItemGroup = Menu.ItemGroup;
 
 
-    handleChange = (event, value) => {
+export default class NavBar extends React.Component {
+
+    state = {
+        current: 'home',
+    };
+
+
+    handleClick = (e) => {
+        const key = e.key;
+
+        console.log('click ', e);
         this.setState({
-            selected: value
+            current: key,
         });
 
-        switch (value) {
-            case 0:
-                break;
+        switch (key) {
 
-            case 1:
+            case 'home':
                 history.push('/');
                 break;
 
-            case 2:
+            case 'page1':
                 history.push('/react/page1');
                 break;
 
-            case 3:
+            case 'page2':
                 history.push('/react/page2');
                 break;
 
-            case 4:
+            case 'page3':
                 history.push('/react/page3');
                 break;
 
-            case 5:
+            case 'page4':
                 history.push('/react/page4');
                 break;
 
-            case 6:
+            case 'page5':
                 history.push('/react/page5');
                 break;
 
@@ -53,8 +56,66 @@ export default class NavBar extends Component {
 
     render() {
         return (
-            <h1>Navbar</h1>
-        )
+            <Menu
+                onClick={this.handleClick}
+                selectedKeys={[this.state.current]}
+                mode="horizontal"
+            >
+
+                <Menu.Item key="home">
+                    <Icon type="home"/>Home
+                </Menu.Item>
+
+                <Menu.Item key="page1">
+                    <Icon type="dashboard"/>Page 1
+                </Menu.Item>
+
+                <Menu.Item key="page2">
+                    <Icon type="picture"/>Page 2
+                </Menu.Item>
+
+                <Menu.Item key="page3">
+                    <Icon type="desktop"/>Page 3
+                </Menu.Item>
+
+                <Menu.Item key="page4">
+                    <Icon type="lock"/>Page 4
+                </Menu.Item>
+
+                <Menu.Item key="page5">
+                    <Icon type="file-pdf"/>Page 5
+                </Menu.Item>
+
+
+                <SubMenu title={<span><Icon type="setting"/>Navigation Three - Submenu</span>}>
+                    <MenuItemGroup title="Item 1">
+                        <Menu.Item key="setting:1">Option 1</Menu.Item>
+                        <Menu.Item key="setting:2">Option 2</Menu.Item>
+                    </MenuItemGroup>
+                    <MenuItemGroup title="Item 2">
+                        <Menu.Item key="setting:3">Option 3</Menu.Item>
+                        <Menu.Item key="setting:4">Option 4</Menu.Item>
+                    </MenuItemGroup>
+
+                    <MenuItemGroup title="Item 3">
+                        <SubMenu key="sub3" title="Submenu">
+                            <Menu.Item key="7">Option 7</Menu.Item>
+                            <Menu.Item key="8">Option 8</Menu.Item>
+                        </SubMenu>
+                    </MenuItemGroup>
+
+                </SubMenu>
+
+                <Menu.Item key="logout">
+                    <a href="/logout" target="_blank" rel="noopener noreferrer">
+                    <Icon type="logout"/>Logout</a>
+                </Menu.Item>
+
+            </Menu>
+        );
     }
 
 }
+
+
+

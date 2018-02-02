@@ -17,7 +17,7 @@ module.exports = {
                 loader: 'babel-loader',
                 query: {
                     cacheDirectory: true,
-                    presets: ['es2015', 'react'],
+                    presets: ['es2015', 'react', 'stage-0','stage-3'],
                     plugins: [
                         ['transform-class-properties'],
                         ['import', { 'libraryName': 'antd', 'libraryDirectory': 'es', 'style': 'css' }] // `style: true` for less

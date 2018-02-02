@@ -4,19 +4,37 @@ import com.springr.first.domain.Employee;
 
 public interface EmployeeService {
 
-    Iterable<Employee> findAll();
-
-    Employee findOne(Long id);
-
-    Employee createNew();
+    Employee save(Employee employee);
 
 
     Iterable<Employee> save(Iterable<Employee> employees);
 
-    Employee save(Employee employee);
+
+    Employee findOne(Long id);
 
 
-    void remove(Iterable<Long> employees);
+    Boolean exists(Long id);
+
+
+    Iterable<Employee> findAll();
+
+
+    Iterable<Employee> findAll(Iterable<Long> id);
+
+
+    Long count();
+
+
+    void delete(Long id);
+
+
+    void delete(Employee employee);
+
+
+    void delete(Iterable<Employee> employees);
+
+
+    void deleteAll();
 
 
 }

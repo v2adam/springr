@@ -1,5 +1,6 @@
 package com.springr.first.misc;
 
+import com.springr.first.domain.Book;
 import com.springr.first.domain.Employee;
 import com.springr.first.domain.Role;
 import com.springr.first.domain.User;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Component;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.sql.DataSource;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 

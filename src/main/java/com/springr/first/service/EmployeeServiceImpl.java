@@ -19,26 +19,10 @@ public class EmployeeServiceImpl implements EmployeeService {
         this.employeeRepository = employeeRepository;
     }
 
-
-    // GET
     @Override
-    public Iterable<Employee> findAll() {
-        return employeeRepository.findAll();
+    public Employee save(Employee employee) {
+        return employeeRepository.save(employee);
     }
-
-    @Override
-    public Employee findOne(Long id) {
-        return employeeRepository.findOne(id);
-    }
-
-
-    // POST
-    @Override
-    public Employee createNew() {
-        Employee e = new Employee();
-        return employeeRepository.save(e);
-    }
-
 
     @Override
     public Iterable<Employee> save(Iterable<Employee> employees) {
@@ -46,14 +30,47 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public Employee save(Employee employee) {
-        return employeeRepository.save(employee);
+    public Employee findOne(Long id) {
+        return employeeRepository.findOne(id);
     }
-
 
     @Override
-    public void remove(Iterable<Long> employees) {
-        employees.forEach(p -> employeeRepository.deleteById(p));
+    public Boolean exists(Long id) {
+        return employeeRepository.exists(id);
     }
 
+    @Override
+    public Iterable<Employee> findAll() {
+        return employeeRepository.findAll();
+    }
+
+    @Override
+    public Iterable<Employee> findAll(Iterable<Long> id) {
+        return employeeRepository.findAll(id);
+    }
+
+    @Override
+    public Long count() {
+        return employeeRepository.count();
+    }
+
+    @Override
+    public void delete(Long id) {
+        employeeRepository.delete(id);
+    }
+
+    @Override
+    public void delete(Employee employee) {
+        employeeRepository.delete(employee);
+    }
+
+    @Override
+    public void delete(Iterable<Employee> employees) {
+        employeeRepository.delete(employees);
+    }
+
+    @Override
+    public void deleteAll() {
+        employeeRepository.deleteAll();
+    }
 }
