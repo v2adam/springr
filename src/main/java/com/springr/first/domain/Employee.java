@@ -1,5 +1,6 @@
 package com.springr.first.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -12,6 +13,7 @@ import javax.persistence.*;
         @NamedQuery(name = "Employee.myNamedQ", query = "SELECT u FROM Employee u"),
         @NamedQuery(name = "Employee.findByNamedQ", query = "SELECT u FROM Employee u WHERE u.name = :name"),
 })
+@JsonIgnoreProperties(value = {"status"})
 public class Employee {
 
     @Id
@@ -29,4 +31,5 @@ public class Employee {
         this.name = name;
         this.status = status;
     }
+
 }

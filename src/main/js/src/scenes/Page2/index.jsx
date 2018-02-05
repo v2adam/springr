@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import { Table } from 'antd';
+import React from 'react';
+import {Table} from 'antd';
 import axios from 'axios';
 
 const columns = [{
@@ -12,8 +12,8 @@ const columns = [{
     title: 'Gender',
     dataIndex: 'gender',
     filters: [
-        { text: 'Male', value: 'male' },
-        { text: 'Female', value: 'female' },
+        {text: 'Male', value: 'male'},
+        {text: 'Female', value: 'female'},
     ],
     width: '20%',
 }, {
@@ -21,7 +21,7 @@ const columns = [{
     dataIndex: 'email',
 }];
 
-export default class Page2 extends Component {
+export default class Page2 extends React.Component {
     state = {
         data: [],
         pagination: {},
@@ -29,7 +29,7 @@ export default class Page2 extends Component {
     };
 
     handleTableChange = (pagination, filters, sorter) => {
-        const pager = { ...this.state.pagination };
+        const pager = {...this.state.pagination};
         pager.current = pagination.current;
         this.setState({
             pagination: pager,
@@ -45,30 +45,24 @@ export default class Page2 extends Component {
 
     fetch = (params = {}) => {
         console.log('params:', params);
+        this.setState({loading: true});
 
-        const config = {
-            data: {
-                results: 10,
-                ...params,
-            },
+        const opts = {
             headers: {
                 'Content-Type': 'application/json',
             }
         };
 
 
-
-        this.setState({ loading: true });
-        axios
-            .get('https://randomuser.me/api', config)
-            .then((data) => {
-            const pagination = { ...this.state.pagination };
+        axios.get('https://randomuser.me/api/?results=10', opts).then((data) => {
+            const pagination = {...this.state.pagination};
+            console.log(data.data.results);
             // Read total count from server
             // pagination.total = data.totalCount;
             pagination.total = 200;
             this.setState({
                 loading: false,
-                data: data.results,
+                data: data.data.results,
                 pagination,
             });
         });
@@ -76,7 +70,7 @@ export default class Page2 extends Component {
 
     componentDidMount() {
         this.fetch();
-    }
+    };
 
     render() {
         return (
@@ -90,3 +84,4 @@ export default class Page2 extends Component {
         );
     }
 }
+

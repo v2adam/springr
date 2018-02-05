@@ -1,5 +1,6 @@
 package com.springr.first.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.springr.first.dto.RandomUser.*;
 import lombok.Data;

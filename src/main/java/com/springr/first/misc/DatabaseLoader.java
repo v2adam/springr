@@ -1,6 +1,7 @@
 package com.springr.first.misc;
 
 import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -95,8 +96,17 @@ public class DatabaseLoader implements CommandLineRunner {
     private ModelMapper modelMapper;
 
     @Autowired
-    public void setModelMapper(@Qualifier("modelMapper") ModelMapper modelMapper) {
+    public void setModelMapper(@Qualifier("myModelMapper") ModelMapper modelMapper) {
         this.modelMapper = modelMapper;
+    }
+
+
+
+    private ObjectMapper objectMapper;
+
+    @Autowired
+    public void setObjectMapper(@Qualifier("myJackson") ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -167,7 +177,7 @@ public class DatabaseLoader implements CommandLineRunner {
         /* Random user-ek fetchelése */
 
 
-        URL url = new URL("https://randomuser.me/api/?results=10");
+        URL url = new URL("https://randomuser.me/api/?results=25");
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("GET");
 
@@ -191,16 +201,19 @@ public class DatabaseLoader implements CommandLineRunner {
 
         /* a kapott JSON átmappelése objektummá */
 
-        ObjectMapper mapper = new ObjectMapper();
+        objectMapper = new ObjectMapper();
 
         try {
 
             // tree-ből így mappelhető át objektummá
-            JsonNode rootNode = mapper.readTree(sb.toString());
+            JsonNode rootNode = objectMapper.readTree(sb.toString());
             JsonNode locatedNode = rootNode.path("results");
-            List<RandomUserDTO> randomUserDTOList = Arrays.asList(mapper.readValue(locatedNode.toString(), RandomUserDTO[].class));
+            List<RandomUserDTO> randomUserDTOList = Arrays.asList(objectMapper.readValue(locatedNode.toString(), RandomUserDTO[].class));
 
+            // másik módszer
+            //List<RandomUserDTO> listCar = objectMapper.readValue(locatedNode.toString(), new TypeReference<List<RandomUserDTO>>(){});
 
+/*
             // modelmapper-t állítani kell, mert nem lát le mélyre
             try {
                 modelMapper.addMappings(new PropertyMap<RandomUserDTO, RandomUser>() {
@@ -237,6 +250,7 @@ public class DatabaseLoader implements CommandLineRunner {
             } catch (Exception e) {
                 System.out.println(e.toString());
             }
+*/
 
             List<RandomUser> entityUserList = new ArrayList<>();
 
@@ -245,6 +259,8 @@ public class DatabaseLoader implements CommandLineRunner {
             });
 
             randomUserService.save(entityUserList);
+
+
 
 
         } catch (JsonGenerationException e) {
