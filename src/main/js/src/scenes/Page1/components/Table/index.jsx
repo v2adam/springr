@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Button, Divider, Dropdown, Icon, Menu, Modal, Table, Tooltip} from 'antd';
 import PropTypes from "prop-types";
-
+import _ from 'lodash';
 const confirm = Modal.confirm;
 
 export default class MyTable extends Component {
@@ -10,6 +10,25 @@ export default class MyTable extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            sortedInfo: null,
+            filteredInfo: null,
+            columns: [{
+                title: 'ID',
+                dataIndex: 'id',
+                key: 'id',
+                sorter: (a, b) => a.id - b.id
+            }, {
+                title: 'Name',
+                dataIndex: 'name',
+                key: 'name',
+                sorter: (a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase())
+            }, {
+                title: 'Status',
+                dataIndex: 'status',
+                key: 'status',
+                sorter: (a, b) => a.status.toLowerCase().localeCompare(b.status.toLowerCase())
+            }
+            ],
             extraColumn: [{
                 title: 'Action',
                 key: 'action',
@@ -47,14 +66,12 @@ export default class MyTable extends Component {
                 ),
             }],
             modalVisible: false,
-            markDelete: []
+            selectedRowKeys: [],
+            selectedRows: [],
+            loading: false,
+            pagination: {},
         }
     }
-
-    _onChange = (e) => {
-        console.log(e);
-
-    };
 
     handleModalCancel = () => {
         this.setState({
@@ -80,11 +97,47 @@ export default class MyTable extends Component {
     };
 
 
+    handleChange = (pagination, filters, sorter) => {
+        console.log('Various parameters', pagination, filters, sorter);
+        this.setState({
+            filteredInfo: filters,
+            sortedInfo: sorter,
+        });
+    };
+
+    setAgeSort = () => {
+        console.log('setAgeSort');
+        this.setState({
+            sortedInfo: {
+                order: 'descend',
+                columnKey: 'age',
+            },
+        });
+    };
+
+
     render() {
-        const {columns, data, editorMode} = this.props;
-        const {extraColumn, modalVisible, markDelete} = this.state;
+        const {data, editorMode, loading} = this.props;
+        const {extraColumn, modalVisible, columns, pagination} = this.state;
 
         const showColumn = editorMode ? columns.concat(extraColumn) : columns;
+
+
+        const rowSelection = {
+            onChange: (selectedRowKeys, selectedRows) => {
+                console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+                this.setState({
+                    selectedRowKeys: selectedRowKeys,
+                    selectedRows: selectedRows
+                })
+            },
+
+            getCheckboxProps: record => ({
+                disabled: record.id === 'Disabled User', // Column configuration not to be checked
+                name: record.id,
+            }),
+        };
+
 
         return (
             [
@@ -93,7 +146,10 @@ export default class MyTable extends Component {
                     columns={showColumn}
                     dataSource={data}
                     rowKey={record => record.id}
-                    onChange={this._onChange}
+                    rowSelection={rowSelection}
+                    onChange={this.handleChange}
+                    loading={loading}
+                    pagination={pagination}
                 />
             ]
 
@@ -104,11 +160,9 @@ export default class MyTable extends Component {
 
 
 MyTable.propTypes = {
-    columns: PropTypes.array.isRequired,
     data: PropTypes.array.isRequired,
 };
 
 MyTable.defaultProps = {
-    columns: [],
     data: [],
 };

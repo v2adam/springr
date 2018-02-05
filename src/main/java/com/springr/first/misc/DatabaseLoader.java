@@ -1,13 +1,21 @@
 package com.springr.first.misc;
 
-import com.springr.first.domain.Book;
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.springr.first.domain.Employee;
+import com.springr.first.domain.RandomUser;
 import com.springr.first.domain.Role;
 import com.springr.first.domain.User;
+import com.springr.first.dto.RandomUser.RandomUserDTO;
 import com.springr.first.repo.UserRepository;
 import com.springr.first.service.EmployeeService;
+import com.springr.first.service.RandomUserServiceImpl;
 import com.springr.first.service.TodoServiceImpl;
 import com.springr.first.service.auth.UserService;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
@@ -16,8 +24,13 @@ import org.springframework.stereotype.Component;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.sql.DataSource;
-import java.math.BigDecimal;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Component
@@ -68,6 +81,22 @@ public class DatabaseLoader implements CommandLineRunner {
     @Autowired
     public void setEmployeeService(@Qualifier("employeeServiceImpl") EmployeeService employeeService) {
         this.employeeService = employeeService;
+    }
+
+
+    private RandomUserServiceImpl randomUserService;
+
+    @Autowired
+    public void setRandomUserService(@Qualifier("randomUserServiceImpl") RandomUserServiceImpl randomUserService) {
+        this.randomUserService = randomUserService;
+    }
+
+
+    private ModelMapper modelMapper;
+
+    @Autowired
+    public void setModelMapper(@Qualifier("modelMapper") ModelMapper modelMapper) {
+        this.modelMapper = modelMapper;
     }
 
     @Override
@@ -133,6 +162,98 @@ public class DatabaseLoader implements CommandLineRunner {
         }
 
         employeeService.save(employeeList);
+
+
+        /* Random user-ek fetchelése */
+
+
+        URL url = new URL("https://randomuser.me/api/?results=10");
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("GET");
+
+        StringBuffer sb = new StringBuffer();
+        String currentLine;
+        BufferedReader br = null;
+
+        try {
+            br = new BufferedReader(new InputStreamReader((con.getInputStream())));
+            while ((currentLine = br.readLine()) != null) {
+                sb.append(currentLine);
+            }
+        } finally {
+            if (br != null) {
+                br.close();
+            }
+            con.disconnect();
+        }
+
+
+
+        /* a kapott JSON átmappelése objektummá */
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        try {
+
+            // tree-ből így mappelhető át objektummá
+            JsonNode rootNode = mapper.readTree(sb.toString());
+            JsonNode locatedNode = rootNode.path("results");
+            List<RandomUserDTO> randomUserDTOList = Arrays.asList(mapper.readValue(locatedNode.toString(), RandomUserDTO[].class));
+
+
+            // modelmapper-t állítani kell, mert nem lát le mélyre
+            try {
+                modelMapper.addMappings(new PropertyMap<RandomUserDTO, RandomUser>() {
+
+                    @Override
+                    protected void configure() {
+                        map().setCity(source.getLocation().getCity());
+                        map().setStreet(source.getLocation().getStreet());
+                        map().setState(source.getLocation().getState());
+                        map().setPostcode(source.getLocation().getPostcode());
+
+                        map().setName(source.getId().getName());
+                        map().setValue(source.getId().getValue());
+
+
+                        map().setUsername(source.getLogin().getUsername());
+                        map().setPassword(source.getLogin().getPassword());
+                        map().setSalt(source.getLogin().getSalt());
+                        map().setMd5(source.getLogin().getMd5());
+                        map().setSha1(source.getLogin().getSha1());
+                        map().setSha256(source.getLogin().getSha256());
+
+                        map().setTitle(source.getName().getTitle());
+                        map().setFirst(source.getName().getFirst());
+                        map().setLast(source.getName().getLast());
+
+
+                        map().setLarge(source.getPicture().getLarge());
+                        map().setMedium(source.getPicture().getMedium());
+                        map().setThumbnail(source.getPicture().getThumbnail());
+                    }
+                });
+
+            } catch (Exception e) {
+                System.out.println(e.toString());
+            }
+
+            List<RandomUser> entityUserList = new ArrayList<>();
+
+            randomUserDTOList.forEach(p -> {
+                entityUserList.add(modelMapper.map(p, RandomUser.class));
+            });
+
+            randomUserService.save(entityUserList);
+
+
+        } catch (JsonGenerationException e) {
+            e.printStackTrace();
+        } catch (JsonMappingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
 
     }

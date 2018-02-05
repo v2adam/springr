@@ -11,18 +11,8 @@ export default class Page1 extends Component {
         super(props);
         this.state = {
             data: [],
-            columns: [{
-                title: 'ID',
-                dataIndex: 'id',
-            }, {
-                title: 'Name',
-                dataIndex: 'name',
-            }, {
-                title: 'Status',
-                dataIndex: 'status',
-            }
-            ],
-            editorMode: true
+            editorMode: true,
+            loading: false
 
         }
     }
@@ -37,11 +27,13 @@ export default class Page1 extends Component {
     }
 
     fetchData = () => {
+        this.setState({loading: true});
         axios.get('/my_api/employees').then(res => {
             this.setState({
                 data: _.map(res.data, (one, i) => {
                     return {...one};
-                })
+                }),
+                loading: false
             });
         }).catch(err => console.log(err));
     };
@@ -73,11 +65,12 @@ export default class Page1 extends Component {
 
 
     render() {
-        const {data, columns, editorMode} = this.state;
+        const {data, editorMode, loading} = this.state;
+        console.log(loading);
         return (
             [
                 <Switch key="switchKey" defaultChecked onChange={this.changeEditorMode}/>,
-                <MyTable key="myTableKey" columns={columns} data={data} editorMode={editorMode} delete={this.delete}/>
+                <MyTable key="myTableKey" data={data} editorMode={editorMode} delete={this.delete} loading={loading}/>
             ]
         );
     }

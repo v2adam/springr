@@ -65,6 +65,8 @@ public class ReactController {
     @RequestMapping(value = "employees/{id}", method = RequestMethod.DELETE)
     public void deleteOne(@PathVariable("id") Long id) {
         employeeService.delete(id);
+      // System.out.println("a");
+       //System.out.println("a");
     }
 
 
