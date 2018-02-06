@@ -1,7 +1,6 @@
 package com.springr.first.misc;
 
 import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,7 +15,6 @@ import com.springr.first.service.RandomUserServiceImpl;
 import com.springr.first.service.TodoServiceImpl;
 import com.springr.first.service.auth.UserService;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.PropertyMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
@@ -101,11 +99,10 @@ public class DatabaseLoader implements CommandLineRunner {
     }
 
 
-
     private ObjectMapper objectMapper;
 
     @Autowired
-    public void setObjectMapper(@Qualifier("myJackson") ObjectMapper objectMapper) {
+    public void setObjectMapper(@Qualifier("myObjectMapper") ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
 
@@ -259,8 +256,6 @@ public class DatabaseLoader implements CommandLineRunner {
             });
 
             randomUserService.save(entityUserList);
-
-
 
 
         } catch (JsonGenerationException e) {
