@@ -8,6 +8,7 @@ import org.modelmapper.PropertyMap;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Singleton;
 
 @Component
@@ -15,6 +16,7 @@ import javax.inject.Singleton;
 public class ModelMapperConfig {
 
     @Bean("myModelMapper")
+    @PostConstruct
     public ModelMapper myModelMapper() {
 
         ModelMapper modelMapper = new ModelMapper();

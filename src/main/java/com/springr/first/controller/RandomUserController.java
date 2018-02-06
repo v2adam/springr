@@ -3,6 +3,7 @@ package com.springr.first.controller;
 
 import com.springr.first.domain.RandomUser;
 import com.springr.first.dto.RandomUser.RandomUserDTO;
+import com.springr.first.misc.DTO;
 import com.springr.first.service.RandomUserServiceImpl;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +59,7 @@ public class RandomUserController {
         return convertToDTO(randomUserService.findOne(id));
     }
 
-
+/*
     // Create a new
     @RequestMapping(value = "random_users", method = RequestMethod.POST)
     @ResponseBody
@@ -68,6 +69,25 @@ public class RandomUserController {
         RandomUser created = randomUserService.save(randomUser);
         return convertToDTO(created);
     }
+*/
+/*
+    @RequestMapping(value = "random_users", method = RequestMethod.POST)
+    public void newExam(@RequestBody RandomUserDTO randomUserDTO) {
+
+        System.out.println(randomUserDTO.toString());
+
+        randomUserService.save(convertToEntity(randomUserDTO));
+    }
+*/
+
+    @RequestMapping(value = "random_users", method = RequestMethod.POST)
+    public void newExam(@DTO(RandomUserDTO.class) RandomUser randomUser ) {
+
+        System.out.println(randomUser.toString());
+
+        randomUserService.save(randomUser);
+    }
+
 
 
     // Bulk update
