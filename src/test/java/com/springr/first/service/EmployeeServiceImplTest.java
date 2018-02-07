@@ -1,12 +1,28 @@
 package com.springr.first.service;
 
 
-//@Ignore
-//RunWith(SpringJUnit4ClassRunner.class)
-//@ContextConfiguration
+import com.springr.first.domain.Employee;
+import com.springr.first.repo.EmployeeRepository;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration
 public class EmployeeServiceImplTest {
 
-/*
+
     @Autowired
     private EmployeeService employeeService;
 
@@ -60,5 +76,5 @@ public class EmployeeServiceImplTest {
             return Mockito.mock(EmployeeRepository.class);
         }
     }
-*/
+
 }

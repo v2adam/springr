@@ -3,7 +3,7 @@ package com.springr.first.repo;
 
 //@Ignore
 //@RunWith(SpringRunner.class)
-//@DataJpaTest
+//@DataJpaTest //repo teszteléshez, rollback-el
 public class EmployeeRepositoryTest {
 /*
     @Autowired
