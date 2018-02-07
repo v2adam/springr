@@ -9,6 +9,8 @@ import lombok.Setter;
 @Setter
 public class RandomUserDTO {
 
+    public Long idField;
+
     @JsonProperty("gender")
     public String gender;
 
@@ -49,7 +51,8 @@ public class RandomUserDTO {
     @Override
     public String toString() {
         return "RandomUserDTO{" +
-                "gender='" + gender + '\'' +
+                "idField=" + idField +
+                ", gender='" + gender + '\'' +
                 ", email='" + email + '\'' +
                 ", dob='" + dob + '\'' +
                 ", registered='" + registered + '\'' +

@@ -49,6 +49,9 @@ public class ModelMapperConfig {
                 map().setLarge(source.getPicture().getLarge());
                 map().setMedium(source.getPicture().getMedium());
                 map().setThumbnail(source.getPicture().getThumbnail());
+
+                map().setMainKey(source.getIdField());
+
             }
         });
 
@@ -79,6 +82,8 @@ public class ModelMapperConfig {
                 map().getPicture().setLarge(source.getLarge());
                 map().getPicture().setMedium(source.getMedium());
                 map().getPicture().setThumbnail(source.getThumbnail());
+
+                map().setIdField(source.getMainKey());
             }
         });
 

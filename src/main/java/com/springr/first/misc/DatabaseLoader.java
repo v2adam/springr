@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.springr.first.domain.Employee;
-import com.springr.first.domain.RandomUser;
 import com.springr.first.domain.Role;
 import com.springr.first.domain.User;
 import com.springr.first.dto.RandomUser.RandomUserDTO;
@@ -249,13 +248,11 @@ public class DatabaseLoader implements CommandLineRunner {
             }
 */
 
-            List<RandomUser> entityUserList = new ArrayList<>();
-
-            randomUserDTOList.forEach(p -> {
-                entityUserList.add(modelMapper.map(p, RandomUser.class));
-            });
-
-            randomUserService.save(entityUserList);
+            randomUserDTOList.forEach(
+                    p -> {
+                        randomUserService.save(p);
+                    }
+            );
 
 
         } catch (JsonGenerationException e) {
