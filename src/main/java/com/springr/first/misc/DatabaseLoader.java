@@ -129,7 +129,7 @@ public class DatabaseLoader implements CommandLineRunner {
         todoService.updateNative("user");
 
 
-        Role adminRole = new Role("admin");
+        Role adminRole = new Role("ADMIN");
         todoService.createNewRole(adminRole);
 
 

@@ -3,7 +3,6 @@ package com.springr.first.service;
 
 import com.springr.first.domain.RandomUser;
 import com.springr.first.dto.RandomUser.RandomUserDTO;
-import com.springr.first.exceptions.RandomUserException;
 import com.springr.first.repo.RandomUserRepository;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -12,6 +11,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.lang.reflect.Type;
 
 @Service
@@ -51,6 +51,9 @@ public class RandomUserServiceImpl implements RandomUserService {
 
     @Override
     public RandomUserDTO findOne(Long id) {
+        if (!exists(id)) {
+            throw new EntityNotFoundException("Resource id = {" + id + "} not found");
+        }
         return modelMapper.map(randomUserRepository.findOne(id), RandomUserDTO.class);
     }
 
@@ -61,14 +64,6 @@ public class RandomUserServiceImpl implements RandomUserService {
 
     @Override
     public Iterable<RandomUserDTO> findAll() {
-
-        System.out.println(randomUserRepository.findAll());
-
-        RandomUser r = randomUserRepository.findAll().iterator().next();
-
-        RandomUserDTO d = modelMapper.map(r, RandomUserDTO.class);
-
-
         return modelMapper.map(randomUserRepository.findAll(), RandomUserDTOListType);
     }
 
@@ -84,11 +79,10 @@ public class RandomUserServiceImpl implements RandomUserService {
 
     @Override
     public void delete(Long id) {
-        if (exists(id)) {
-            randomUserRepository.delete(id);
-        } else {
-            throw new RandomUserException("Not found");
+        if (!exists(id)) {
+            throw new EntityNotFoundException("Resource id = {" + id + "} not found");
         }
+        randomUserRepository.delete(id);
     }
 
     @Override
@@ -116,13 +110,14 @@ public class RandomUserServiceImpl implements RandomUserService {
 
     @Override
     public RandomUserDTO updateOne(Long id, RandomUserDTO updateOne) {
-        if (randomUserRepository.exists(id)) {
-            RandomUser old = randomUserRepository.findOne(id);
-            modelMapper.map(updateOne, old);
-            return modelMapper.map(randomUserRepository.save(old), RandomUserDTO.class);
-        } else {
-            throw new RandomUserException("No user found");
+
+        if (!randomUserRepository.exists(id)) {
+            throw new EntityNotFoundException("Resource id = {" + id + "} not found");
         }
+
+        RandomUser old = randomUserRepository.findOne(id);
+        modelMapper.map(updateOne, old);
+        return modelMapper.map(randomUserRepository.save(old), RandomUserDTO.class);
     }
 
 

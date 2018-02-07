@@ -2,6 +2,7 @@ package com.springr.first.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,7 +20,8 @@ public class Rest1Controller {
         this.myBean = myBean;
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    // így lehet levédeni a metódust
+    @PreAuthorize("hasAuthority('ADMIN')")
     @RequestMapping(value = "/1")
     public String index() {
         return "1" + myBean;

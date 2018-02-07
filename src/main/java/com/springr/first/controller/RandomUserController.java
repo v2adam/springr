@@ -2,21 +2,16 @@ package com.springr.first.controller;
 
 
 import com.springr.first.dto.RandomUser.RandomUserDTO;
-import com.springr.first.exceptions.RandomUserException;
 import com.springr.first.service.RandomUserServiceImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 @RequestMapping("/my_api")
 public class RandomUserController {
-
-
-    Logger logger = LoggerFactory.getLogger(getClass());
-
 
 
     private RandomUserServiceImpl randomUserService;
@@ -31,9 +26,6 @@ public class RandomUserController {
     // Returns a list
     @RequestMapping(value = "random_users", method = RequestMethod.GET)
     public Iterable<RandomUserDTO> findAll() {
-
-        logger.info(randomUserService.findAll().toString());
-
         return randomUserService.findAll();
     }
 
@@ -71,12 +63,7 @@ public class RandomUserController {
     // Delete a specific
     @RequestMapping(value = "random_users/{id}", method = RequestMethod.DELETE)
     public void deleteOne(@PathVariable("id") Long id) {
-        try {
-            randomUserService.delete(id);
-        } catch (RandomUserException e) {
-            System.out.println(e.toString());
-        }
-
+        randomUserService.delete(id);
     }
 
 }
