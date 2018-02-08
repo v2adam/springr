@@ -4,25 +4,21 @@ package com.springr.first.service;
 import com.springr.first.domain.RandomUser;
 import com.springr.first.dto.RandomUser.RandomUserDTO;
 import com.springr.first.repo.RandomUserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
+@Slf4j
 @Service
 @Transactional
 public class RandomUserServiceImpl implements RandomUserService {
-
-    private final static Type RandomUserListType = new TypeToken<Iterable<RandomUser>>() {
-    }.getType();
-    private final static Type RandomUserDTOListType = new TypeToken<Iterable<RandomUserDTO>>() {
-    }.getType();
-
 
     private RandomUserRepository randomUserRepository;
 
@@ -64,12 +60,26 @@ public class RandomUserServiceImpl implements RandomUserService {
 
     @Override
     public Iterable<RandomUserDTO> findAll() {
-        return modelMapper.map(randomUserRepository.findAll(), RandomUserDTOListType);
+
+        List<RandomUserDTO> res = new ArrayList<>();
+        (randomUserRepository.findAll()).forEach(p -> {
+            res.add(modelMapper.map(p, RandomUserDTO.class));
+        });
+
+        return res;
+
     }
 
     @Override
     public Iterable<RandomUserDTO> findAll(Iterable<Long> ids) {
-        return modelMapper.map(randomUserRepository.findAll(ids), RandomUserDTOListType);
+
+        List<RandomUserDTO> res = new ArrayList<>();
+        (randomUserRepository.findAll(ids)).forEach(p -> {
+            res.add(modelMapper.map(p, RandomUserDTO.class));
+        });
+
+        return res;
+
     }
 
     @Override
@@ -92,7 +102,13 @@ public class RandomUserServiceImpl implements RandomUserService {
 
     @Override
     public void delete(Iterable<RandomUserDTO> randomUserDTOs) {
-        randomUserRepository.delete((RandomUser) modelMapper.map(randomUserDTOs, RandomUserListType));
+
+        List<RandomUser> mapped = new ArrayList<>();
+        randomUserDTOs.forEach(p -> {
+            mapped.add(modelMapper.map(p, RandomUser.class));
+        });
+
+        randomUserRepository.delete(mapped);
     }
 
     @Override

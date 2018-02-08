@@ -173,7 +173,7 @@ public class DatabaseLoader implements CommandLineRunner {
         /* Random user-ek fetchelése */
 
 
-        URL url = new URL("https://randomuser.me/api/?results=25");
+        URL url = new URL("https://randomuser.me/api/?results=100");
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("GET");
 

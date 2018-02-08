@@ -3,15 +3,6 @@ import {Input, Popconfirm, Table} from 'antd';
 import axios from "axios/index";
 
 const data = [];
-for (let i = 0; i < 100; i++) {
-    data.push({
-        key: i.toString(),
-        name: `Edrward ${i}`,
-        age: 32,
-        address: `London Park no. ${i}`,
-    });
-}
-
 const EditableCell = ({editable, value, onChange}) => (
     <div>
         {editable
@@ -25,8 +16,12 @@ export default class Page3 extends Component {
     constructor(props) {
         super(props);
         this.columns = [{
+            title: 'idField',
+            dataIndex: 'idField',
+            render: (text, record) => this.renderColumns(text, record, 'idField'),
+        }, {
             title: 'username',
-            dataIndex: 'username',
+            dataIndex: 'login.username',
             render: (text, record) => this.renderColumns(text, record, 'username'),
         }, {
             title: 'email',
@@ -38,15 +33,15 @@ export default class Page3 extends Component {
             render: (text, record) => this.renderColumns(text, record, 'registered'),
         }, {
             title: 'city',
-            dataIndex: 'city',
+            dataIndex: 'location.city',
             render: (text, record) => this.renderColumns(text, record, 'city'),
         }, {
             title: 'state',
-            dataIndex: 'state',
+            dataIndex: 'location.state',
             render: (text, record) => this.renderColumns(text, record, 'state'),
         }, {
             title: 'street',
-            dataIndex: 'street',
+            dataIndex: 'location.street',
             render: (text, record) => this.renderColumns(text, record, 'street'),
         },
 
@@ -145,7 +140,7 @@ export default class Page3 extends Component {
     }
 
     render() {
-        return <Table bordered dataSource={this.state.data} columns={this.columns} rowKey={record => record.username}/>;
+        return <Table bordered dataSource={this.state.data} columns={this.columns} rowKey="idField"/>;
     }
 }
 

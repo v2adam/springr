@@ -1,6 +1,7 @@
 package com.springr.first.exceptions;
 
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.HibernateException;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -198,6 +199,15 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
         apiError.setMessage(ex.getMessage());
         return buildResponseEntity(apiError);
     }
+
+    @ExceptionHandler(value = {HibernateException.class})
+    protected ResponseEntity<Object> handleHibernateException(RuntimeException ex, WebRequest request) {
+        ApiError apiError = new ApiError(INTERNAL_SERVER_ERROR);
+        apiError.setMessage(ex.getMessage());
+        return buildResponseEntity(apiError);
+    }
+
+
 
 
 /*
