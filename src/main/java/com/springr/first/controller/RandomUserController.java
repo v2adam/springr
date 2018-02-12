@@ -6,10 +6,11 @@ import com.springr.first.service.RandomUserServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import static com.springr.first.config.WebSocketConfig.MESSAGE_PREFIX;
 
 @Slf4j
 @RestController
@@ -27,6 +28,8 @@ public class RandomUserController {
 
 
     // Returns a list
+    @MessageMapping("/find_again")
+    @SendTo(MESSAGE_PREFIX + "/updated_list")
     @RequestMapping(value = "random_users", method = RequestMethod.GET)
     public Iterable<RandomUserDTO> findAll() {
         return randomUserService.findAll();

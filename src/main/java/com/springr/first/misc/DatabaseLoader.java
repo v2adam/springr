@@ -172,7 +172,7 @@ public class DatabaseLoader implements CommandLineRunner {
 
         /* Random user-ek fetchelése */
 
-
+/*
         URL url = new URL("https://randomuser.me/api/?results=100");
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("GET");
@@ -192,6 +192,58 @@ public class DatabaseLoader implements CommandLineRunner {
             }
             con.disconnect();
         }
+*/
+
+        StringBuffer sb = new StringBuffer();
+
+
+        sb.append("{\n" +
+                "  \"results\": [\n" +
+                "    {\n" +
+                "      \"gender\": \"male\",\n" +
+                "      \"name\": {\n" +
+                "        \"title\": \"mr\",\n" +
+                "        \"first\": \"romain\",\n" +
+                "        \"last\": \"hoogmoed\"\n" +
+                "      },\n" +
+                "      \"location\": {\n" +
+                "        \"street\": \"1861 jan pieterszoon coenstraat\",\n" +
+                "        \"city\": \"maasdriel\",\n" +
+                "        \"state\": \"zeeland\",\n" +
+                "        \"postcode\": 69217\n" +
+                "      },\n" +
+                "      \"email\": \"romain.hoogmoed@example.com\",\n" +
+                "      \"login\": {\n" +
+                "        \"username\": \"lazyduck408\",\n" +
+                "        \"password\": \"jokers\",\n" +
+                "        \"salt\": \"UGtRFz4N\",\n" +
+                "        \"md5\": \"6d83a8c084731ee73eb5f9398b923183\",\n" +
+                "        \"sha1\": \"cb21097d8c430f2716538e365447910d90476f6e\",\n" +
+                "        \"sha256\": \"5a9b09c86195b8d8b01ee219d7d9794e2abb6641a2351850c49c309f1fc204a0\"\n" +
+                "      },\n" +
+                "      \"dob\": \"1983-07-14 07:29:45\",\n" +
+                "      \"registered\": \"2010-09-24 02:10:42\",\n" +
+                "      \"phone\": \"(656)-976-4980\",\n" +
+                "      \"cell\": \"(065)-247-9303\",\n" +
+                "      \"id\": {\n" +
+                "        \"name\": \"BSN\",\n" +
+                "        \"value\": \"04242023\"\n" +
+                "      },\n" +
+                "      \"picture\": {\n" +
+                "        \"large\": \"https://randomuser.me/api/portraits/men/83.jpg\",\n" +
+                "        \"medium\": \"https://randomuser.me/api/portraits/med/men/83.jpg\",\n" +
+                "        \"thumbnail\": \"https://randomuser.me/api/portraits/thumb/men/83.jpg\"\n" +
+                "      },\n" +
+                "      \"nat\": \"NL\"\n" +
+                "    }\n" +
+                "  ],\n" +
+                "  \"info\": {\n" +
+                "    \"seed\": \"2da87e9305069f1d\",\n" +
+                "    \"results\": 1,\n" +
+                "    \"page\": 1,\n" +
+                "    \"version\": \"1.1\"\n" +
+                "  }\n" +
+                "}");
 
 
 

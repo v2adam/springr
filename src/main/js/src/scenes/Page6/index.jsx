@@ -1,18 +1,87 @@
 import React, {Component} from 'react';
-import {Button} from 'antd';
+import {Button, InputNumber} from 'antd';
 import axios from 'axios';
+import {stompClient} from '../../misc/websocket-listener';
+
 
 export default class Page6 extends Component {
 
 
+    constructor(props) {
+        super(props);
+        this.state = {
+            data: [],
+            loading: false,
+            delNumber: 0,
+            timestamp: ''
+        };
 
 
+    }
 
-    sendPost = () => {
+
+    componentDidMount() {
+        this.fetchData();
+    }
+
+
+    refreshAndGoToLastPage = () => {
+        console.log('refreshAndGoToLastPage');
+    };
+
+    refreshCurrentPage = () => {
+        console.log('refreshCurrentPage');
+        this.fetchData();
+    };
+
+
+    fetchData = () => {
+        this.setState({loading: true});
+        axios.get('/my_api/random_users').then(res => {
+            this.setState({
+                data: _.map(res.data, (one, i) => {
+                    return {id: one.idField};
+                }),
+                loading: false
+            });
+            console.log(res);
+        }).catch(err => console.log(err));
+    };
+
+
+    deleteFirst = () => {
+        console.log('delete');
+
+
+        this.setState({loading: true});
+
+        axios.delete(`/my_api/random_users/${this.state.delNumber}`).then(res => {
+            console.log(res);
+        }).catch(err => console.log(err));
+
+
+        stompClient.send('/app/hello', {}, JSON.stringify({uziPaylaod: this.state.delNumber}));
+
+    };
+
+
+    changeNumber = (value) => {
+        console.log('changed', value);
+        this.setState({
+            delNumber: value
+        });
+    };
+
+
+    autoAdd = () => {
+        console.log('autoAdd');
+
+        this.setState({loading: true});
+
 
         const randomUser = {
-            gender: "male",
-            email: "12312312312312312@123123123123",
+            gender: Math.random() + '',
+            email: "ujemailezlesz@uj.com",
             dob: "1985-06-25 11:47:36",
             registered: "2012-03-13 22:19:02",
             phone: "04-327-370",
@@ -48,18 +117,29 @@ export default class Page6 extends Component {
             }
         };
 
-        axios.post('/my_api/random_users', randomUser).then((res) => {
+
+        axios.post(`/my_api/random_users`, randomUser).then(res => {
             console.log(res);
         }).catch(err => console.log(err));
 
+        stompClient.send('/app/find_again');
+
+
+
+        //stompClient.send('/app/hello', {}, JSON.stringify({uziPaylaod: this.state.delNumber}));
+
     };
 
-
     render() {
+        const {data, delNumber} = this.state;
+
         return (
             <div>
                 <h1>Page6</h1>
-                <Button type="primary" onClick={this.sendPost}>Primary</Button>
+                <InputNumber min={0} defaultValue={delNumber} onChange={this.changeNumber}/>
+                <Button type="primary" onClick={this.deleteFirst}>Delete</Button>
+                <Button type="secondary" onClick={this.autoAdd}>AutoAdd</Button>
+                {JSON.stringify(data)}
             </div>
         );
     }
