@@ -122,11 +122,11 @@ export default class Page6 extends Component {
             console.log(res);
         }).catch(err => console.log(err));
 
-        stompClient.send('/app/find_again');
+      //  stompClient.send('/app/hello', randomUser);
 
 
 
-        //stompClient.send('/app/hello', {}, JSON.stringify({uziPaylaod: this.state.delNumber}));
+        stompClient.send('/app/hello', {}, JSON.stringify({uziPaylaod: this.state.delNumber}));
 
     };
 

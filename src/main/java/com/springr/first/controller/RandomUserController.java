@@ -27,9 +27,6 @@ public class RandomUserController {
     }
 
 
-    // Returns a list
-    @MessageMapping("/find_again")
-    @SendTo(MESSAGE_PREFIX + "/updated_list")
     @RequestMapping(value = "random_users", method = RequestMethod.GET)
     public Iterable<RandomUserDTO> findAll() {
         return randomUserService.findAll();

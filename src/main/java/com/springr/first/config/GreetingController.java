@@ -16,8 +16,8 @@ public class GreetingController {
 
     @MessageMapping("/hello") // (a react erre a címre küldte)
     @SendTo(MESSAGE_PREFIX + "/greetings") // (aki erre feliratkozott, az megkapja)
-    public String greeting(String message) throws Exception {
-        log.info("Ezt kaptam: " + message);
+    public String greeting(String msg) throws Exception {
+        log.info("greeting: " + msg);
         Thread.sleep(1000); // simulated delay
         return "ez a servertől jött";
 
