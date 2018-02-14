@@ -1,65 +1,83 @@
 import React, {Component} from 'react';
-import {Button} from 'antd';
-import axios from 'axios';
+import {Button, Input, Switch, List, Avatar } from 'antd';
+import {WebSocketFactory} from "../../misc/websocket";
+
+const {TextArea} = Input;
+let stompClient;
+
 
 export default class Page7 extends Component {
 
 
+    constructor(props) {
+        super(props);
+        this.state = {
+            message: '',
+            messageBoard: [],
+            connected: false
+        }
+    }
 
-
-
-    sendPost = () => {
-
-        const randomUser = {
-            gender: "male",
-            email: "12312312312312312@123123123123",
-            dob: "1985-06-25 11:47:36",
-            registered: "2012-03-13 22:19:02",
-            phone: "04-327-370",
-            cell: "041-907-28-59",
-            nat: "FI",
-            name: {
-                title: "mr",
-                first: "onni",
-                last: "koivisto"
-            },
-            location: {
-                street: "1550 itsenäisyydenkatu",
-                city: "sund",
-                state: "northern savonia",
-                postcode: "81590"
-            },
-            login: {
-                username: "lazycat105",
-                password: "gypsy",
-                salt: "yrmRoKbb",
-                md5: "cedfbc80140ef7f99ffec1d909b1090a",
-                sha1: "38ece5fccb9bf4943fc294c806a6fc423b4615dc",
-                sha256: "6b87ec64c3d123c7a5dc9dd23215a8aaae49763bb002dc394ef72428b8ee90e1"
-            },
-            id: {
-                name: "HETU",
-                value: "785-1370"
-            },
-            picture: {
-                large: "https://randomuser.me/api/portraits/men/4.jpg",
-                medium: "https://randomuser.me/api/portraits/med/men/4.jpg",
-                thumbnail: "https://randomuser.me/api/portraits/thumb/men/4.jpg"
-            }
-        };
-
-        axios.post('/my_api/random_users', randomUser).then((res) => {
-            console.log(res);
-        }).catch(err => console.log(err));
-
+    componentDidMount() {
     };
 
+
+    refreshMessageBoard = (frame) => {
+        const msg = frame.body;
+        this.setState({
+            messageBoard: [...this.state.messageBoard, msg]
+        });
+    };
+
+    sendMessage = () => {
+        stompClient.send('/app/newMessage', {}, JSON.stringify({payload: this.state.message}));
+
+        this.setState({
+           message: null
+        });
+    };
+
+    updateMessage = (e) => {
+        this.setState({
+            message: e.target.value
+        });
+    };
+
+    connect = (changed) => {
+      this.setState({connected: changed}, () => {
+          if(this.state.connected){
+              const factory = new WebSocketFactory();
+              stompClient = factory.createSocket([{route: '/topic/newMessage', callback: this.refreshMessageBoard}]);
+          }else{
+              stompClient.disconnect();
+          }
+      });
+    };
 
     render() {
         return (
             <div>
                 <h1>Page7</h1>
-                <Button type="primary" onClick={this.sendPost}>Primary</Button>
+                <Switch defaultChecked={false} onChange={this.connect} />
+                <List
+                    itemLayout="horizontal"
+                    dataSource={this.state.messageBoard}
+                    renderItem={item => (
+                        <List.Item>
+                            <List.Item.Meta
+                                avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />}
+                                title={<a href="https://ant.design"></a>}
+                                description={item}
+                            />
+                        </List.Item>
+                    )}
+                />
+                <TextArea rows={4}
+                          placeholder="Write your message"
+                          onChange={this.updateMessage}
+                          disabled={!this.state.connected}
+                          value={this.state.message}
+                          onPressEnter={this.sendMessage}/>
             </div>
         );
     }
