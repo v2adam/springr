@@ -29,4 +29,6 @@ public interface RandomUserService {
     Iterable<RandomUserDTO> bulkUpdate(Iterable<RandomUserDTO> randomUserDTOs);
 
     RandomUserDTO updateOne(Long id, RandomUserDTO updateOne);
+
+    RandomUserDTO findFirst();
 }

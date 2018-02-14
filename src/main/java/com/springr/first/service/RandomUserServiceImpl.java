@@ -1,6 +1,7 @@
 package com.springr.first.service;
 
 
+import com.google.common.collect.Iterables;
 import com.springr.first.domain.RandomUser;
 import com.springr.first.dto.RandomUser.RandomUserDTO;
 import com.springr.first.repo.RandomUserRepository;
@@ -134,6 +135,12 @@ public class RandomUserServiceImpl implements RandomUserService {
         RandomUser old = randomUserRepository.findOne(id);
         modelMapper.map(updateOne, old);
         return modelMapper.map(randomUserRepository.save(old), RandomUserDTO.class);
+    }
+
+    @Override
+    public RandomUserDTO findFirst() {
+        Iterable<RandomUserDTO> all = findAll();
+        return Iterables.get(all, 0);
     }
 
 
