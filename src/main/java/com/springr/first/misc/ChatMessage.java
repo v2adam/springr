@@ -1,9 +1,16 @@
 package com.springr.first.misc;
 
+import lombok.*;
+
 import java.util.Date;
 
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Getter
+@Setter
+@ToString
 public class ChatMessage {
-
 
     private String author;
 
@@ -13,39 +20,4 @@ public class ChatMessage {
 
     private String avatarColor;
 
-    public ChatMessage() {
-    }
-
-
-    public String getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public Date getTimeStamp() {
-        return timeStamp;
-    }
-
-    public void setTimeStamp(Date timeStamp) {
-        this.timeStamp = timeStamp;
-    }
-
-    public String getAvatarColor() {
-        return avatarColor;
-    }
-
-    public void setAvatarColor(String avatarColor) {
-        this.avatarColor = avatarColor;
-    }
 }

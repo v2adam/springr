@@ -2,28 +2,30 @@ import SockJS from 'sockjs-client';
 
 const Stomp = require("stompjs/lib/stomp.js").Stomp;
 
+const WebSocket = function () {
 
-function WebSocketFactory() {
+    this.socket = null;
+    this.stompClient = null;
 
-    this.createSocket = function (registrations) {
-        const socket = new SockJS('/my_endpoint');
-        const stompClient = Stomp.over(socket);
+    this.handshake = function () {
+        this.socket = new SockJS('/my_endpoint');
+        this.stompClient = Stomp.over(this.socket);
+    };
 
-        // connect(headers, connectCallback, errorCallback)
-        stompClient.connect({}, (frame) => {
+    this.register = function (registrations, onOpenCb) {
+        this.stompClient.connect({}, (frame) => {
             registrations.forEach((registration) => {
                 //  var subscription = client.subscribe(...);
                 //  subscription.unsubscribe();
-                stompClient.subscribe(registration.route, registration.callback);
+                this.stompClient.subscribe(registration.route, registration.callback);
             });
+            onOpenCb();
         }, (err) => {
             console.log(err);
         });
-
-        return stompClient;
-    }
-}
+    };
+};
 
 export {
-    WebSocketFactory
+    WebSocket
 }
