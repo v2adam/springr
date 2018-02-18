@@ -20,7 +20,8 @@ export default class Page7 extends Component {
             messageBoard: [],
             connected: false,
             color: randomColor(),
-            selectedPrivateUser: 'none'
+            selectedPrivateUser: 'none',
+            connectedUsers: []
         }
     }
 
@@ -63,19 +64,29 @@ export default class Page7 extends Component {
 
                 ws.register([
                     {route: '/topic/newMessage', callback: this.refreshMessageBoard},
-                    {route: '/user/queue/private', callback: this.privateMessageReceived}
+                    {route: '/user/queue/private', callback: this.privateMessageReceived},
+                    {route: '/topic/allUsers', callback: this.refreshActiveUsers}
                 ], this.onOpenHandler);
 
             } else {
                 stompClient.disconnect(() => {
+                    this.setState({connectedUsers: []});
                     message.info('Disconnected', 3);
                 });
             }
         });
     };
 
+    refreshActiveUsers = (receivedMsg) => {
+        const msg = JSON.parse(receivedMsg.body).slice();
+        this.setState({
+            connectedUsers: msg
+        });
+    };
+
 
     onOpenHandler = () => {
+        stompClient.send('/app/allUsers');
         message.info('Connected', 3);
     };
 
@@ -109,6 +120,7 @@ export default class Page7 extends Component {
         return (
             <div>
                 <h1>Page7</h1>
+                {this.state.connectedUsers.map((one, i) => <h4 key={`userKey_${i}`}>{one}</h4>)}
                 <Switch defaultChecked={false} onChange={this.connect}/>
                 <Select defaultValue="none" style={{width: 120}} onChange={this.selectUser}>
                     <Option value="none">none</Option>

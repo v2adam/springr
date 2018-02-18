@@ -4,14 +4,16 @@ package com.springr.first.config;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.messaging.MessageSecurityMetadataSourceRegistry;
 import org.springframework.security.config.annotation.web.socket.AbstractSecurityWebSocketMessageBrokerConfigurer;
+
 @Configuration
 public class WebSocketSecurity extends AbstractSecurityWebSocketMessageBrokerConfigurer {
 
     @Override
     protected void configureInbound(MessageSecurityMetadataSourceRegistry messages) {
         messages
-                // users cannot send to these broker destinations, only the application can
-                .simpMessageDestMatchers("/topic/chat.login", "/topic/chat.logout", "/topic/chat.message").denyAll()
+                // security állítás a kliensektől jövő info-ra
+                // .simpMessageDestMatchers("/topic/chat.login", "/topic/chat.logout", "/topic/chat.message").denyAll()
+                // .simpMessageDestMatchers("/user/**").hasAuthority("ADMIN")
                 .anyMessage().authenticated();
     }
 
@@ -20,6 +22,5 @@ public class WebSocketSecurity extends AbstractSecurityWebSocketMessageBrokerCon
         //disable CSRF for websockets for now...
         return true;
     }
-
 
 }

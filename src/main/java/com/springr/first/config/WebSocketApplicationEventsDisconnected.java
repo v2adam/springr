@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 import java.security.Principal;
@@ -26,7 +25,7 @@ public class WebSocketApplicationEventsDisconnected implements ApplicationListen
 
     @Override
     public void onApplicationEvent(SessionDisconnectEvent event) {
-       // StompHeaderAccessor sha = StompHeaderAccessor.wrap(event.getMessage());
+        // StompHeaderAccessor sha = StompHeaderAccessor.wrap(event.getMessage());
 
         Principal principal = event.getUser();
         log.info("disconnected: " + principal.getName());
@@ -36,6 +35,7 @@ public class WebSocketApplicationEventsDisconnected implements ApplicationListen
         msg.setAuthor("System");
         msg.setContent("Disconnected: " + principal.getName());
 
+        chatController.allUsers();
         chatController.sendForAllUser(msg);
 
     }
