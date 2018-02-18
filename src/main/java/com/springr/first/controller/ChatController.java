@@ -1,4 +1,4 @@
-package com.springr.first.config;
+package com.springr.first.controller;
 
 import com.springr.first.misc.ChatMessage;
 import com.springr.first.service.auth.UserDetailsImpl;

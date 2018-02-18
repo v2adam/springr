@@ -1,11 +1,11 @@
-package com.springr.first.config;
+package com.springr.first.controller;
 
 import com.springr.first.misc.ChatMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.user.SimpUserRegistry;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 
 import java.security.Principal;
@@ -13,7 +13,7 @@ import java.util.Date;
 
 
 @Slf4j
-@Configuration
+@Controller
 public class WebSocketApplicationEventsConnected implements ApplicationListener<SessionConnectedEvent> {
 
     private ChatController chatController;
