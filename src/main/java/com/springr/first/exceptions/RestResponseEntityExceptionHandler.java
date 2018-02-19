@@ -208,7 +208,12 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
     }
 
 
-
+    @ExceptionHandler(value = {StorageException.class})
+    protected ResponseEntity<Object> handleStorageException(RuntimeException ex, WebRequest request) {
+        ApiError apiError = new ApiError(INTERNAL_SERVER_ERROR);
+        apiError.setMessage(ex.getMessage());
+        return buildResponseEntity(apiError);
+    }
 
 /*
     @ExceptionHandler(value = {IllegalArgumentException.class, IllegalStateException.class})

@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
-import {Button, InputNumber} from 'antd';
-import axios from 'axios';
-
+import {Button, Icon, List, message, Upload} from 'antd';
+import axios from "axios/index";
+import ErrorBoundary from "../../components/ErrorBoundary";
 
 export default class Page6 extends Component {
 
@@ -9,60 +9,92 @@ export default class Page6 extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            data: [],
-            loading: false,
-            delNumber: 0,
-            timestamp: ''
+            folderContent: [],
+            name: 'file',
+            action: '/my_api/files/upload',
+            fileList: [{
+                uid: -1,
+                name: 'xxx.png',
+                status: 'done',
+                url: 'http://www.baidu.com/xxx.png',
+            }]
         };
-            }
-
+    }
 
     componentDidMount() {
-        this.fetchData();
+        this.listFiles();
     }
 
 
-
-
-    fetchData = () => {
-        this.setState({loading: true});
-        axios.get('/my_api/random_users').then(res => {
-            this.setState({
-                data: _.map(res.data, (one, i) => {
-                    return {id: one.idField};
-                }),
-                loading: false
-            });
+    listFiles = () => {
+        axios.get('/my_api/files').then(res => {
             console.log(res);
-        }).catch(err => console.log(err));
+            this.setState({
+                folderContent: res.data
+            });
+
+            const mapped = this.state.folderContent.map((one, i) => ({
+                uid: i + 1,
+                name: one.fileName,
+                status: 'done',
+                url: one.path
+            }));
+
+            this.setState({
+                fileList: mapped
+            });
+
+        }).catch(err => {
+            console.log(err);
+            message.error('Baj van');
+        });
     };
 
 
-    deleteFirst = () => {
+    onChange = (info) => {
+
+        if (info.file.status !== 'uploading') {
+            console.log(info.file, info.fileList);
+        }
+        if (info.file.status === 'done') {
+            message.success(`${info.file.name} file uploaded successfully`);
+        } else if (info.file.status === 'error') {
+            message.error(`${info.file.name} file upload failed.`);
+        }
+
+        let fileList = info.fileList;
+
+        this.setState({fileList});
 
     };
 
-
-    changeNumber = (value) => {
-
-    };
-
-
-    autoAdd = () => {
-
-    };
 
     render() {
-        const {data, delNumber} = this.state;
+        const props = {
+            name: 'file',
+            action: '/my_api/files/upload',
+            onChange: this.onChange,
+            multiple: false,
+        };
 
         return (
-            <div>
-                <h1>Page6</h1>
-                <InputNumber min={0} defaultValue={delNumber} onChange={this.changeNumber}/>
-                <Button type="primary" onClick={this.deleteFirst}>Delete</Button>
-                <Button type="secondary" onClick={this.autoAdd}>AutoAdd</Button>
-                {JSON.stringify(data)}
-            </div>
+            <ErrorBoundary>
+                <Upload {...props} fileList={this.state.fileList}>
+                    <Button>
+                        <Icon type="upload"/> Upload
+                    </Button>
+                </Upload>
+                <Button onClick={this.listFiles} type="secondary">List</Button>
+
+                <List
+                    header={<div>Content</div>}
+                    bordered
+                    dataSource={this.state.folderContent}
+                    renderItem={(item, i) => (
+                        <List.Item><a key={`folderKey_${i}`} href={item.path}>{item.fileName}</a></List.Item>)}
+                />
+
+            </ErrorBoundary>
         );
     }
 }
