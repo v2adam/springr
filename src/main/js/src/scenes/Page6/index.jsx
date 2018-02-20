@@ -12,12 +12,7 @@ export default class Page6 extends Component {
             folderContent: [],
             name: 'file',
             action: '/my_api/files/upload',
-            fileList: [{
-                uid: -1,
-                name: 'xxx.png',
-                status: 'done',
-                url: 'http://www.baidu.com/xxx.png',
-            }]
+            fileList: []
         };
     }
 
@@ -27,6 +22,8 @@ export default class Page6 extends Component {
 
 
     listFiles = () => {
+        console.log('listFiles');
+
         axios.get('/my_api/files').then(res => {
             console.log(res);
             this.setState({
@@ -52,7 +49,7 @@ export default class Page6 extends Component {
 
 
     onChange = (info) => {
-
+        console.log('onChange');
         if (info.file.status !== 'uploading') {
             console.log(info.file, info.fileList);
         }
@@ -69,6 +66,15 @@ export default class Page6 extends Component {
     };
 
 
+    remove = (file) => {
+        console.log(file);
+    };
+
+    beforeUpload = (file, fileList) => {
+        console.log(file, fileList);
+    };
+
+
     render() {
         const props = {
             name: 'file',
@@ -79,7 +85,11 @@ export default class Page6 extends Component {
 
         return (
             <ErrorBoundary>
-                <Upload {...props} fileList={this.state.fileList}>
+                <Upload {...props}
+                        fileList={this.state.fileList}
+                        onRemove={this.remove}
+                        beforeUpload={this.beforeUpload}
+                        accept={"*"}>
                     <Button>
                         <Icon type="upload"/> Upload
                     </Button>
