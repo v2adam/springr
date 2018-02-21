@@ -51,15 +51,13 @@ public class UploadFileController {
     }
 
 
+    // feltöltött xls-t beparsolom és visszaküldöm
     @PostMapping("/files/upload/xls")
     public ResponseEntity<?> xlsUpload(@RequestParam("file") MultipartFile uploadFile) {
         if (uploadFile.isEmpty()) {
             return new ResponseEntity("please select a file!", HttpStatus.OK);
         }
-
-        processXls.convertFileToDTO(uploadFile);
-
-        return new ResponseEntity("Successfully uploaded - " + uploadFile.getOriginalFilename(), new HttpHeaders(), HttpStatus.OK);
+        return ResponseEntity.ok().body(processXls.detectHeader(processXls.convertFileToDTO(uploadFile), true));
     }
 
 

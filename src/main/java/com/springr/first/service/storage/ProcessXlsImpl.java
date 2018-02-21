@@ -1,5 +1,8 @@
 package com.springr.first.service.storage;
 
+import com.google.common.base.Predicates;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Iterators;
 import com.springr.first.misc.ExcelDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
@@ -9,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 
@@ -22,7 +26,7 @@ public class ProcessXlsImpl implements ProcessXls {
 
         ExcelDTO<List<Object>> excelDTO = new ExcelDTO<>();
         excelDTO.setRows(new ArrayList<>());
-        excelDTO.setTitle(uploadFile.getName());
+        excelDTO.setTitle(uploadFile.getOriginalFilename());
 
         try {
             Workbook workbook = new XSSFWorkbook(uploadFile.getInputStream());
@@ -59,9 +63,18 @@ public class ProcessXlsImpl implements ProcessXls {
             e.printStackTrace();
         }
 
-        log.info(excelDTO.getTitle());
-        excelDTO.getRows().forEach(r -> log.info(r.toString()));
-
         return excelDTO;
     }
+
+    @Override
+    public ExcelDTO<? extends Collection<?>> detectHeader(ExcelDTO<? extends Collection<?>> excelDTO, Boolean containsHeader) {
+        if (containsHeader) {
+            excelDTO.setHeader((List<String>) Iterators.get(excelDTO.getRows().iterator(), 0));
+            Collection old = excelDTO.getRows();
+            Iterables.removeIf(Iterables.limit(old, 1), Predicates.alwaysTrue());
+            excelDTO.getRows().addAll(old);
+        }
+        return excelDTO;
+    }
+
 }
