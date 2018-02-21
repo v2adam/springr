@@ -1,6 +1,7 @@
 package com.springr.first.controller;
 
 
+import com.springr.first.service.storage.ProcessXls;
 import com.springr.first.service.storage.StorageService;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +31,13 @@ public class UploadFileController {
     }
 
 
+    private ProcessXls processXls;
+
+    @Autowired
+    public void setProcessXls(ProcessXls processXls) {
+        this.processXls = processXls;
+    }
+
     // fájl feltöltés fájérendszerbe
     @PostMapping("/files/upload")
     public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile uploadFile) {
@@ -38,6 +46,18 @@ public class UploadFileController {
         }
 
         storageService.store(uploadFile);
+
+        return new ResponseEntity("Successfully uploaded - " + uploadFile.getOriginalFilename(), new HttpHeaders(), HttpStatus.OK);
+    }
+
+
+    @PostMapping("/files/upload/xls")
+    public ResponseEntity<?> xlsUpload(@RequestParam("file") MultipartFile uploadFile) {
+        if (uploadFile.isEmpty()) {
+            return new ResponseEntity("please select a file!", HttpStatus.OK);
+        }
+
+        processXls.convertFileToDTO(uploadFile);
 
         return new ResponseEntity("Successfully uploaded - " + uploadFile.getOriginalFilename(), new HttpHeaders(), HttpStatus.OK);
     }
