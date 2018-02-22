@@ -3,13 +3,11 @@ package com.springr.first.service.storage;
 import com.springr.first.misc.ExcelDTO;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Collection;
+// ide kerülnek azok a függvények, amelyek az xls -> dto konverzióhoz kellenek
+public interface ProcessXls<T, S> {
 
-public interface ProcessXls {
+    ExcelDTO<T> convertFileToDTO(MultipartFile uploadFile);
 
-    ExcelDTO<? extends Collection<?>> convertFileToDTO(MultipartFile uploadFile);
-
-    ExcelDTO<? extends Collection<?>> detectHeader(ExcelDTO<? extends Collection<?>> excelDTO, Boolean containsHeader);
-
+    ExcelDTO<T> detectHeader(ExcelDTO<T> excelDTO, Boolean containsHeader);
 
 }

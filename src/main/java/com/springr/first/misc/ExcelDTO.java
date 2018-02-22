@@ -2,7 +2,7 @@ package com.springr.first.misc;
 
 import lombok.*;
 
-import java.util.Collection;
+import java.io.Serializable;
 import java.util.List;
 
 @AllArgsConstructor
@@ -11,9 +11,9 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-public class ExcelDTO<T extends Collection> {
+public class ExcelDTO<T> {
 
-    private T rows;
+    private List<T> rows;
     private String title;
     private Boolean containsHeader;
     private List<String> header;

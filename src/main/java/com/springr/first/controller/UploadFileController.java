@@ -6,6 +6,7 @@ import com.springr.first.service.storage.StorageService;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -30,11 +31,10 @@ public class UploadFileController {
         this.storageService = storageService;
     }
 
-
     private ProcessXls processXls;
 
     @Autowired
-    public void setProcessXls(ProcessXls processXls) {
+    public void setProcessXls(@Qualifier("processCustomRow") ProcessXls processXls) {
         this.processXls = processXls;
     }
 
@@ -57,7 +57,7 @@ public class UploadFileController {
         if (uploadFile.isEmpty()) {
             return new ResponseEntity("please select a file!", HttpStatus.OK);
         }
-        return ResponseEntity.ok().body(processXls.detectHeader(processXls.convertFileToDTO(uploadFile), true));
+        return ResponseEntity.ok().body(processXls.convertFileToDTO(uploadFile));
     }
 
 
