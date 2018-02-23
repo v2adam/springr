@@ -1,6 +1,7 @@
 package com.springr.first.controller;
 
 
+import com.springr.first.aspect.MyLoggable;
 import com.springr.first.service.storage.ProcessXls;
 import com.springr.first.service.storage.StorageService;
 import lombok.Data;
@@ -50,7 +51,7 @@ public class UploadFileController {
         return new ResponseEntity("Successfully uploaded - " + uploadFile.getOriginalFilename(), new HttpHeaders(), HttpStatus.OK);
     }
 
-
+    @MyLoggable
     // feltöltött xls-t beparsolom és visszaküldöm
     @PostMapping("/files/upload/xls")
     public ResponseEntity<?> xlsUpload(@RequestParam("file") MultipartFile uploadFile) {
