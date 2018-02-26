@@ -46,13 +46,17 @@ public class EmployeeServiceImplTest {
         Assert.assertEquals(employeeService.findAll(), employeeList);
     }
 
+
     @Test
-    public void saveOneEmployee() {
+    public void saveEmployee_when_saveMethodCalledWithValidEmployee() {
+        // given
         Employee store = new Employee("name2", "status2");
         Mockito.when(employeeRepository.save(store)).thenReturn(store);
 
+        // when
         Employee saved = employeeService.save(store);
 
+        // then
         Assert.assertEquals(saved.getName(), store.getName());
         Assert.assertEquals(saved.getStatus(), store.getStatus());
     }

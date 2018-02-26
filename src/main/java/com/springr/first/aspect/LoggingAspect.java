@@ -9,7 +9,7 @@ import org.aspectj.lang.annotation.*;
 import org.springframework.stereotype.Component;
 
 @Slf4j
-@Aspect
+@Aspect //@AspectJ annotációk, de nem annak a framework-je, a spring-aop-ot használja
 @Component
 public class LoggingAspect {
 
@@ -27,9 +27,21 @@ public class LoggingAspect {
         // lefutási sorrend
         @Around: proceed előtt
         @Before
+        target method run
         @Around: proceed után
         @After
         @AfterReturning/@AfterThrowing
+
+
+
+    wildcard: * és a ..
+
+    ("execution(* com.springr.first.service.storage.ProcessXls.convertFileToDTO(..))") // .. -al az összes overloadoltra is
+    ("execution(* com.springr.first.service.storage.ProcessXls.convertFileToDTO(String))") // csak a stringes-re, bármilyen visszatérési érték
+    ("execution(Integer com.springr.first.service.storage.ProcessXls.convertFileToDTO(Double))") // csak arra, ami Integert ad vissza, de Double-t vár
+    ("execution(* com.springr.first.service.storage.*.convertFileToDTO(..))") // wildcard az osztályokra
+
+    ("execution(* *.*(..))") // minden metódus hívásnál
 
      */
 
@@ -45,9 +57,9 @@ public class LoggingAspect {
         log.info("Before executing service method");
     }
 
-    // minden service hívásnál
     // pointcut-tal befogható, és itt bent már elég a metódus nevet meghivatkozni, és használni
-    @Pointcut("within(com.springr.first.service.*))")
+   // @Pointcut("within(com.springr.first.service..*))") // sub package-re is
+    @Pointcut("within(com.springr.first.service.storage.*))") // minden metódusra ami a storage service-ben van
     public void allMethodsPointcut() {
     }
 
@@ -58,8 +70,9 @@ public class LoggingAspect {
     }
 
 
-    @AfterThrowing("execution(* com.springr.first.service.storage.ProcessXls.convertFileToDTO(..))")
-    public void logExceptions(JoinPoint joinPoint) {
+    @AfterThrowing(pointcut = "execution(* com.springr.first.service.storage.ProcessXls.convertFileToDTO(..))", throwing = "ex")
+    public void logExceptions(JoinPoint joinPoint, Exception ex) {
+        log.info("ex dobva:" + ex.toString());
         log.info("Exception thrown in  Method=" + joinPoint.toString());
     }
 
@@ -94,5 +107,11 @@ public class LoggingAspect {
     public void myAdvice() {
         log.info("Executing myAdvice annotation!!");
     }
+
+
+
+    // target: class
+    // this: type of the bean
+
 
 }
