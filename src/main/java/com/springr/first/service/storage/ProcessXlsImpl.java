@@ -6,10 +6,7 @@ import com.springr.first.exceptions.XlsProcessException;
 import com.springr.first.misc.ExcelDTO;
 import com.springr.first.misc.XlsHandlerUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.modelmapper.ModelMapper;
 import org.springframework.web.multipart.MultipartFile;
@@ -46,10 +43,12 @@ public abstract class ProcessXlsImpl<RowDTO, Converter extends XlsHandlerUtil> i
             Sheet sheet = workbook.getSheetAt(0);
             List<RowDTO> row = new ArrayList<>();
             for (Row currentRow : sheet) {
-                for (Cell cell : currentRow) {
-                    converter.parse(cell.getColumnIndex(), cell);
+                if (!isRowEmpty(currentRow)) {
+                    for (Cell cell : currentRow) {
+                        converter.parse(cell.getColumnIndex(), cell);
+                    }
+                    row.add(modelMapper.map(converter, rowTypeDTOClass));
                 }
-                row.add(modelMapper.map(converter, rowTypeDTOClass));
             }
             excelDTO.getRows().addAll(row);
         } catch (IOException e) {
@@ -58,6 +57,18 @@ public abstract class ProcessXlsImpl<RowDTO, Converter extends XlsHandlerUtil> i
 
         return excelDTO;
     }
+
+
+    private static boolean isRowEmpty(Row row) {
+        for (int c = row.getFirstCellNum(); c < row.getLastCellNum(); c++) {
+            Cell cell = row.getCell(c);
+            if (cell != null && cell.getCellTypeEnum() != CellType.BLANK) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 
     @Override
     public ExcelDTO detectHeader(ExcelDTO excelDTO, Boolean containsHeader) {
