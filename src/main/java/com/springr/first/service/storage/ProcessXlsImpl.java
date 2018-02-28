@@ -5,6 +5,7 @@ import com.google.common.collect.Iterables;
 import com.springr.first.exceptions.XlsProcessException;
 import com.springr.first.misc.ExcelDTO;
 import com.springr.first.misc.XlsHandlerUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -19,31 +20,31 @@ import java.util.Collection;
 import java.util.List;
 
 // itt egy lehetséges megvalósítás, amivel egy xls -> dto konverzió
-public abstract class ProcessXlsImpl<T, S extends XlsHandlerUtil> implements ProcessXls {
+@Slf4j
+public abstract class ProcessXlsImpl<RowDTO, Converter extends XlsHandlerUtil> implements ProcessXls {
 
-    private Class<T> rowTypeDTOClass;//.class
-    private S converter;
+    private Class<RowDTO> rowTypeDTOClass;//.class
+    private Converter converter;
     private ModelMapper modelMapper;
 
 
-    public ProcessXlsImpl(Class<T> rowTypeDTOClass, S converter, ModelMapper modelMapper) {
+    public ProcessXlsImpl(Class<RowDTO> rowTypeDTOClass, Converter converter, ModelMapper modelMapper) {
         this.rowTypeDTOClass = rowTypeDTOClass;
         this.converter = converter;
         this.modelMapper = modelMapper;
     }
 
     @Override
-    public ExcelDTO<T> convertFileToDTO(MultipartFile uploadFile) {
+    public ExcelDTO<RowDTO> convertFileToDTO(MultipartFile uploadFile) {
 
-        ExcelDTO<T> excelDTO = new ExcelDTO<>();
+        ExcelDTO<RowDTO> excelDTO = new ExcelDTO<>();
         excelDTO.setRows(new ArrayList<>());
         excelDTO.setTitle(uploadFile.getOriginalFilename());
 
         try {
             Workbook workbook = new XSSFWorkbook(uploadFile.getInputStream());
             Sheet sheet = workbook.getSheetAt(0);
-
-            List<T> row = new ArrayList<>();
+            List<RowDTO> row = new ArrayList<>();
             for (Row currentRow : sheet) {
                 for (Cell cell : currentRow) {
                     converter.parse(cell.getColumnIndex(), cell);
@@ -57,7 +58,6 @@ public abstract class ProcessXlsImpl<T, S extends XlsHandlerUtil> implements Pro
 
         return excelDTO;
     }
-
 
     @Override
     public ExcelDTO detectHeader(ExcelDTO excelDTO, Boolean containsHeader) {

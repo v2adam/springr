@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Aspect //@AspectJ annotációk, de nem annak a framework-je, a spring-aop-ot használja
-@Component
+//@Component //ha ezt kikommentezed, akkor kikapcsol az aspect
 public class LoggingAspect {
 
     // https://docs.spring.io/spring/docs/4.0.x/spring-framework-reference/html/aop.html

@@ -1,16 +1,15 @@
 package com.springr.first.misc;
 
 
+import com.springr.first.misc.excelParser.ParseCellUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Cell;
 import org.springframework.stereotype.Component;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Slf4j
@@ -36,61 +35,48 @@ public class CustomRowXlsHandlerUtil implements XlsHandlerUtil {
 
 
     @Override
-    public void parse(Integer index, Cell cell) {
+    public void parse(Integer index, @NonNull Cell cell) {
+
         switch (index) {
             case 0:
-                id = Integer.valueOf((int) cell.getNumericCellValue());
+                id = ParseCellUtil.cellToInteger(cell);
                 break;
             case 1:
-                issueId = cell.getStringCellValue();
+                issueId = ParseCellUtil.cellToString(cell);
                 break;
             case 2:
-                valami = Integer.valueOf((int) cell.getNumericCellValue());
+                valami = ParseCellUtil.cellToInteger(cell);
                 break;
             case 3:
-                /*
-                // szövegben tárolt szám esetén
-                Optional<String> a = Optional.ofNullable(cell.getStringCellValue()).filter(p -> !p.isEmpty());
-                groupId = a.map(p -> Integer.parseInt(p)).orElse(null);
+                groupId = ParseCellUtil.cellToInteger(cell);
                 break;
-                */
-
-                groupId = Integer.valueOf((int) cell.getNumericCellValue());
-                break;
-
             case 4:
-                subGroupId = cell.getStringCellValue();
+                subGroupId = ParseCellUtil.cellToString(cell);
                 break;
             case 5:
-                DateFormat format = new SimpleDateFormat("yyyy-mm-dd HH:mm:ss");
-                try {
-                    date = format.parse(cell.getStringCellValue());
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
+                date = ParseCellUtil.cellToDate(cell);
                 break;
             case 6:
-                mtid = Long.valueOf((long) cell.getNumericCellValue());
+                mtid = ParseCellUtil.cellToLong(cell);
                 break;
             case 7:
-                cg = Integer.valueOf((int) cell.getNumericCellValue());
+                cg = ParseCellUtil.cellToInteger(cell);
                 break;
             case 8:
-                segm = cell.getStringCellValue();
+                segm = ParseCellUtil.cellToString(cell);
                 break;
             case 9:
-                ossnr = cell.getStringCellValue();
+                ossnr = ParseCellUtil.cellToString(cell);
                 break;
             case 10:
-                accmtid = Long.valueOf((long) cell.getNumericCellValue());
+                accmtid = ParseCellUtil.cellToLong(cell);
                 break;
             case 11:
-                agree = Integer.valueOf((int) cell.getNumericCellValue());
+                agree = ParseCellUtil.cellToInteger(cell);
                 break;
             default:
                 break;
         }
     }
-
 
 }

@@ -11,9 +11,9 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-public class ExcelDTO<T> {
+public class ExcelDTO<RowDTO> {
 
-    private List<T> rows;
+    private List<RowDTO> rows;
     private String title;
     private Boolean containsHeader;
     private List<String> header;
