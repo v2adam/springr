@@ -1,10 +1,12 @@
-package com.springr.first.misc.excelParser;
+package com.springr.first.service.processXls.base;
 
 import com.springr.first.exceptions.XlsProcessException;
+import com.springr.first.service.processXls.base.ParseCellUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -204,6 +206,16 @@ public class ParseCellTest {
         Assert.assertEquals("-12.1", ParseCellUtil.cellToString(mockCell));
     }
 
+
+    @Ignore
+    @Test
+    public void returnString_when_cellTypeIsNumeric_and_contentIsWholeNumber() {
+        Cell mockCell = mock(Cell.class);
+        when(mockCell.getCellTypeEnum()).thenReturn(CellType.NUMERIC);
+        when(mockCell.getStringCellValue()).thenReturn("10");
+
+        Assert.assertEquals("10", ParseCellUtil.cellToString(mockCell));
+    }
 
     /*****************************************DOUBLE*********************************************************************/
 
@@ -490,7 +502,7 @@ public class ParseCellTest {
     }
 
     @Test
-    public void returnDate_when_cellTypeIsNumeric_and_containsDate() {
+    public void returnCell_when_cellTypeIsNumeric_and_containsDate() {
         Date expectedDate = new Date();
         Cell mockCell = mock(Cell.class);
         Workbook wb = new XSSFWorkbook();
@@ -501,7 +513,7 @@ public class ParseCellTest {
         when(mockCell.getDateCellValue()).thenReturn(expectedDate);
         when(mockCell.getCellStyle()).thenReturn(cellStyle);
 
-        Assert.assertEquals(expectedDate, ParseCellUtil.cellToDate(mockCell));
+        Assert.assertEquals(mockCell, ParseCellUtil.cellToDate(mockCell));
     }
 
     @Test

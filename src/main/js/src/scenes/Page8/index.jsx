@@ -18,15 +18,21 @@ export default class Page8 extends Component {
 
 
     // kell egy mappelés, hogy a header key-ei alapján legyen összerendelés a cellákban
-    mapToHeaderKey = (i) => {
+    mapToHeaderKey = (one, i) => {
 
-        let mapped = {};
 
-        for (let x = 0; x < this.state.header.length; x++) {
-            mapped[x] = this.state.rows[i][x];
+        if(!this.state.header){
+            let mapped = {};
+
+            for (let x = 0; x < this.state.header.length; x++) {
+                mapped[x] = this.state.rows[i][x];
+            }
+
+            console.log(mapped);
+            return mapped;
         }
 
-        return mapped;
+        return one;
     };
 
 
@@ -38,10 +44,11 @@ export default class Page8 extends Component {
             message.success(`${info.file.name} file uploaded successfully`);
 
             this.setState({
-                header: info.file.response.header.map((one, i) => ({key: i, name: one})),
+                header: info.file.response.header.map((one) => ({key: one, name: one})),
                 rows: info.file.response.rows.map(one => one)
             }, () => {
-                let mapped = this.state.rows.map((one, i) => this.mapToHeaderKey(i));
+                console.log(this.state);
+                let mapped = this.state.rows.map((one, i) => this.mapToHeaderKey(one, i));
                 this.setState({rows: mapped});
             });
 

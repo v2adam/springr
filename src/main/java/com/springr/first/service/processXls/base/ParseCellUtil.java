@@ -1,4 +1,4 @@
-package com.springr.first.misc.excelParser;
+package com.springr.first.service.processXls.base;
 
 import com.springr.first.exceptions.XlsProcessException;
 import lombok.extern.slf4j.Slf4j;
@@ -7,7 +7,6 @@ import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 
-import java.util.Date;
 import java.util.Optional;
 
 /**
@@ -158,7 +157,7 @@ public final class ParseCellUtil {
 
     }
 
-    public static Date cellToDate(Cell cell) {
+    public static Cell cellToDate(Cell cell) {
         if (cell == null) {
             throw new XlsProcessException("Cell cannot be null");
         }
@@ -177,7 +176,7 @@ public final class ParseCellUtil {
 
         if (CellType.NUMERIC == cell.getCellTypeEnum()) {
             if (HSSFDateUtil.isCellDateFormatted(cell)) {
-                return cell.getDateCellValue();
+                return cell;
             } else {
                 throw new XlsProcessException("Cell is numeric but does not contain valid date");
             }

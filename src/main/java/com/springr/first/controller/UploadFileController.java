@@ -2,7 +2,7 @@ package com.springr.first.controller;
 
 
 import com.springr.first.aspect.MyLoggable;
-import com.springr.first.service.storage.ProcessXls;
+import com.springr.first.service.processXls.base.ProcessXls;
 import com.springr.first.service.storage.StorageService;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +35,7 @@ public class UploadFileController {
     private ProcessXls processXls;
 
     @Autowired
-    public void setProcessXls(@Qualifier("processCustomRow") ProcessXls processXls) {
+    public void setProcessXls(@Qualifier("processMyFirstRowDTO") ProcessXls processXls) {
         this.processXls = processXls;
     }
 
@@ -58,7 +58,7 @@ public class UploadFileController {
         if (uploadFile.isEmpty()) {
             return new ResponseEntity("please select a file!", HttpStatus.OK);
         }
-        return ResponseEntity.ok().body(processXls.convertFileToDTO(uploadFile));
+        return ResponseEntity.ok().body(processXls.detectHeader(processXls.convertFileToDTO(uploadFile)));
     }
 
 

@@ -1,12 +1,11 @@
 package com.springr.first.aspect;
 
 
-import com.springr.first.misc.ExcelDTO;
+import com.springr.first.service.processXls.base.ExcelDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
-import org.springframework.stereotype.Component;
 
 @Slf4j
 @Aspect //@AspectJ annotációk, de nem annak a framework-je, a spring-aop-ot használja
@@ -36,9 +35,9 @@ public class LoggingAspect {
 
     wildcard: * és a ..
 
-    ("execution(* com.springr.first.service.storage.ProcessXls.convertFileToDTO(..))") // .. -al az összes overloadoltra is
-    ("execution(* com.springr.first.service.storage.ProcessXls.convertFileToDTO(String))") // csak a stringes-re, bármilyen visszatérési érték
-    ("execution(Integer com.springr.first.service.storage.ProcessXls.convertFileToDTO(Double))") // csak arra, ami Integert ad vissza, de Double-t vár
+    ("execution(* com.springr.first.service.processXls.base.ProcessXls.convertFileToDTO(..))") // .. -al az összes overloadoltra is
+    ("execution(* com.springr.first.service.processXls.base.ProcessXls.convertFileToDTO(String))") // csak a stringes-re, bármilyen visszatérési érték
+    ("execution(Integer com.springr.first.service.processXls.base.ProcessXls.convertFileToDTO(Double))") // csak arra, ami Integert ad vissza, de Double-t vár
     ("execution(* com.springr.first.service.storage.*.convertFileToDTO(..))") // wildcard az osztályokra
 
     ("execution(* *.*(..))") // minden metódus hívásnál
@@ -46,7 +45,7 @@ public class LoggingAspect {
      */
 
 
-    @Before("execution(* com.springr.first.service.storage.ProcessXls.convertFileToDTO(..))") // csak ennél
+    @Before("execution(* com.springr.first.service.processXls.base.ProcessXls.convertFileToDTO(..))") // csak ennél
     public void logBefore(final JoinPoint joinPoint) {
         log.info("Before");
     }
@@ -64,26 +63,26 @@ public class LoggingAspect {
     }
 
 
-    @After("execution(* com.springr.first.service.storage.ProcessXls.convertFileToDTO(..))")
+    @After("execution(* com.springr.first.service.processXls.base.ProcessXls.convertFileToDTO(..))")
     public void logAfter() {
         log.info("After");
     }
 
 
-    @AfterThrowing(pointcut = "execution(* com.springr.first.service.storage.ProcessXls.convertFileToDTO(..))", throwing = "ex")
+    @AfterThrowing(pointcut = "execution(* com.springr.first.service.processXls.base.ProcessXls.convertFileToDTO(..))", throwing = "ex")
     public void logExceptions(JoinPoint joinPoint, Exception ex) {
         log.info("ex dobva:" + ex.toString());
         log.info("Exception thrown in  Method=" + joinPoint.toString());
     }
 
 
-    @AfterReturning(value = "execution(* com.springr.first.service.storage.ProcessXls.convertFileToDTO(..))", returning = "excelReturned")
+    @AfterReturning(value = "execution(* com.springr.first.service.processXls.base.ProcessXls.convertFileToDTO(..))", returning = "excelReturned")
     public void getNameReturningAdvice(ExcelDTO<?> excelReturned) {
         log.info("Processed Xls=" + excelReturned.getTitle());
     }
 
 
-    @Around("execution(* com.springr.first.service.storage.ProcessXls.convertFileToDTO(..))")
+    @Around("execution(* com.springr.first.service.processXls.base.ProcessXls.convertFileToDTO(..))")
     public Object employeeAroundAdvice(ProceedingJoinPoint proceedingJoinPoint) {
         log.info("Before method invoke");
         Object value = null;

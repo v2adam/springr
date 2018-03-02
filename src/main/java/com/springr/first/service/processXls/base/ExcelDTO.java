@@ -1,8 +1,7 @@
-package com.springr.first.misc;
+package com.springr.first.service.processXls.base;
 
 import lombok.*;
 
-import java.io.Serializable;
 import java.util.List;
 
 @AllArgsConstructor
