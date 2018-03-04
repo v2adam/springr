@@ -16,7 +16,10 @@ import java.util.List;
 
 @Configuration
 public class WebMvcConfig extends WebMvcConfigurerAdapter {
-    private final ApplicationContext applicationContext;
+    // TODO: na ez mire is kellett?
+
+
+   /* private final ApplicationContext applicationContext;
     private final EntityManager entityManager;
 
     private ModelMapper modelMapper;
@@ -37,5 +40,5 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
         super.addArgumentResolvers(argumentResolvers);
         ObjectMapper objectMapper = Jackson2ObjectMapperBuilder.json().applicationContext(this.applicationContext).build();
         argumentResolvers.add(new DTOModelMapper(objectMapper, entityManager, modelMapper));
-    }
+    }*/
 }
