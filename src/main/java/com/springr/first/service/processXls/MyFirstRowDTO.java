@@ -1,8 +1,8 @@
 package com.springr.first.service.processXls;
 
+import com.springr.first.service.processXls.base.MapToDTO;
 import com.springr.first.service.processXls.base.annotation.ParseDestination;
 import com.springr.first.service.processXls.base.annotation.ParserAnnotation;
-import com.springr.first.service.processXls.base.MapToDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -19,6 +19,8 @@ public abstract class ProcessXlsImpl<RowDTO extends MapToDTO<RowDTO>> implements
 
     private Class<RowDTO> clazz;
 
+    private ExcelDTO<RowDTO> excelDTO;
+
     public ProcessXlsImpl(Class<RowDTO> clazz) {
         this.clazz = clazz;
     }
@@ -52,6 +54,8 @@ public abstract class ProcessXlsImpl<RowDTO extends MapToDTO<RowDTO>> implements
             e.printStackTrace();
         }
 
+        setExcelDTO(excelDTO);
+
         return excelDTO;
     }
 
@@ -82,7 +86,17 @@ public abstract class ProcessXlsImpl<RowDTO extends MapToDTO<RowDTO>> implements
 
         excelDTO.setHeader(header);
 
+        setExcelDTO(excelDTO);
+
         return excelDTO;
     }
 
+
+    public ExcelDTO<RowDTO> getExcelDTO() {
+        return excelDTO;
+    }
+
+    public void setExcelDTO(ExcelDTO<RowDTO> excelDTO) {
+        this.excelDTO = excelDTO;
+    }
 }
