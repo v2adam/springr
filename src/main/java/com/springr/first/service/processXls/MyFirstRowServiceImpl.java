@@ -2,16 +2,14 @@ package com.springr.first.service.processXls;
 
 import com.springr.first.domain.MyFirstRowEntity;
 import com.springr.first.repo.MyFirstRowRepository;
-import com.springr.first.service.processXls.base.ExcelDTO;
-import com.springr.first.service.processXls.base.ProcessXlsImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -19,11 +17,8 @@ import java.util.List;
 
 @Slf4j
 @Service
-public class ProcessMyFirstRowDTO extends ProcessXlsImpl<MyFirstRowDTO> {
+public class MyFirstRowServiceImpl implements MyFirstRowService {
 
-    public ProcessMyFirstRowDTO() {
-        super(MyFirstRowDTO.class);
-    }
 
     private MyFirstRowRepository myFirstRowRepository;
 
@@ -39,19 +34,10 @@ public class ProcessMyFirstRowDTO extends ProcessXlsImpl<MyFirstRowDTO> {
         this.modelMapper = modelMapper;
     }
 
-    @Override
-    public ExcelDTO convertFileToDTOAndSave(MultipartFile uploadFile) {
-        convertFileToDTO(uploadFile);
-        detectHeader(getExcelDTO());
-        save();
-        getExcelDTO().setRows(findAll());
-        return getExcelDTO();
-    }
-
 
     // db-ből kiforgatja az entity-t és dto-vá mappeli
     @Transactional
-    private List<MyFirstRowDTO> findAll() {
+    public List<MyFirstRowDTO> findAll() {
         List<MyFirstRowEntity> source = new ArrayList<>();
 
         Type entityListType = new TypeToken<List<MyFirstRowDTO>>() {
@@ -62,16 +48,14 @@ public class ProcessMyFirstRowDTO extends ProcessXlsImpl<MyFirstRowDTO> {
         return modelMapper.map(source, entityListType);
     }
 
-    // a feltöltött excel-t átforgatja entity-vé, és lementi a db-be
+    @Override
     @Transactional
-    private void save() {
-        List<MyFirstRowDTO> source = new ArrayList<>(getExcelDTO().getRows());
-
-        Type entityListType = new TypeToken<List<MyFirstRowEntity>>() {
-        }.getType();
-        List<MyFirstRowEntity> mapped = modelMapper.map(source, entityListType);
-
-        myFirstRowRepository.save(mapped);
+    public void delete(Long id) {
+        try {
+            myFirstRowRepository.delete(id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new EmptyResultDataAccessException("Error while deleting id=" + id, 1);
+        }
     }
 
 }

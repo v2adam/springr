@@ -6,6 +6,7 @@ import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -214,6 +215,14 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
         apiError.setMessage(ex.getMessage());
         return buildResponseEntity(apiError);
     }
+
+    @ExceptionHandler(value = {EmptyResultDataAccessException.class})
+    protected ResponseEntity<Object> deleteRecordNotFoundInDb(RuntimeException ex, WebRequest request) {
+        ApiError apiError = new ApiError(NOT_FOUND);
+        apiError.setMessage(ex.getMessage());
+        return buildResponseEntity(apiError);
+    }
+
 
 /*
     @ExceptionHandler(value = {IllegalArgumentException.class, IllegalStateException.class})
