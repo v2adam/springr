@@ -13,6 +13,8 @@ import Page5 from "./scenes/Page5";
 import Page6 from "./scenes/Page6";
 import Page7 from "./scenes/Page7";
 import Page8 from "./scenes/Page8";
+import Page9 from "./scenes/Page9";
+import Page10 from "./scenes/Page10";
 
 class App extends Component {
     render() {
@@ -29,6 +31,8 @@ class App extends Component {
                     <Route path="/react/page6" component={Page6}/>
                     <Route path="/react/page7" component={Page7}/>
                     <Route path="/react/page8" component={Page8}/>
+                    <Route path="/react/page9" component={Page9}/>
+                    <Route path="/react/page10" component={Page10}/>
 
                     <Route component={PageNotFound}/>
                     {/*<Redirect to="/404"/>*/}

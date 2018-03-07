@@ -19,7 +19,7 @@ public class MyFirstRowEntity {
 
     @Id
     @GeneratedValue
-    private Long idGenerated;
+    private Long id;
 
 
     @OneToOne(fetch = FetchType.EAGER)
@@ -53,7 +53,7 @@ public class MyFirstRowEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private Date updated;
 
-    private Integer id;
+    private Integer someField;
     private String issueId;
     private Integer valami;
     private Integer groupId;

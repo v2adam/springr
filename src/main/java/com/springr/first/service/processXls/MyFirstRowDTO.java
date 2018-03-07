@@ -20,8 +20,10 @@ import java.util.Optional;
 @Slf4j
 public class MyFirstRowDTO implements MapToDTO<MyFirstRowDTO> {
 
+    private Long id;
+
     @ParserAnnotation(parseGoal = ParseDestination.TO_INTEGER, index = 0)
-    private Integer id;
+    private Integer someField;
 
     @ParserAnnotation(parseGoal = ParseDestination.TO_STRING, index = 1)
     private String issueId;
@@ -59,7 +61,7 @@ public class MyFirstRowDTO implements MapToDTO<MyFirstRowDTO> {
 
     @Override
     public MyFirstRowDTO mapTo(List<Object> input) {
-        id = (Integer) input.get(findIndex("id"));
+        someField = (Integer) input.get(findIndex("someField"));
         issueId = (String) input.get(findIndex("issueId"));
         valami = (Integer) input.get(findIndex("valami"));
         groupId = (Integer) input.get(findIndex("groupId"));

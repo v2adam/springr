@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,16 +32,37 @@ public class ProcessMyFirstRowDTO extends ProcessXlsImpl<MyFirstRowDTO> {
         this.myFirstRowRepository = myFirstRowRepository;
     }
 
-    @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    public void setModelMapper(@Qualifier("myModelMapper") ModelMapper modelMapper) {
+        this.modelMapper = modelMapper;
+    }
 
     @Override
     public ExcelDTO convertFileToDTOAndSave(MultipartFile uploadFile) {
         convertFileToDTO(uploadFile);
         detectHeader(getExcelDTO());
         save();
+        findAll().forEach(p -> log.info(p.toString()));
+
+        getExcelDTO().setRows(findAll());
+
         return getExcelDTO();
+    }
+
+
+    // a feltöltött excel-t átforgatja entity-vé, és lementi a db-be
+    @Transactional
+    private List<MyFirstRowDTO> findAll() {
+        List<MyFirstRowEntity> source = new ArrayList<>();
+
+        Type entityListType = new TypeToken<List<MyFirstRowDTO>>() {
+        }.getType();
+
+        source.addAll((List) myFirstRowRepository.findAll());
+
+        return modelMapper.map(source, entityListType);
     }
 
 

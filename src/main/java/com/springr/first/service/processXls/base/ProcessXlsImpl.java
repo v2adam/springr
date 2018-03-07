@@ -77,12 +77,15 @@ public abstract class ProcessXlsImpl<RowDTO extends MapToDTO<RowDTO>> implements
 
         List<String> header = new ArrayList<>();
 
+        header.add("id");
+
         Field[] declaredFields = clazz.getDeclaredFields();
         for (Field field : declaredFields) {
             if (field.isAnnotationPresent(ParserAnnotation.class)) {
                 header.add(field.getName());
             }
         }
+
 
         excelDTO.setHeader(header);
 

@@ -62,6 +62,14 @@ export default class NavBar extends React.Component {
                 history.push('/react/page8');
                 break;
 
+            case 'page9':
+                history.push('/react/page9');
+                break;
+
+            case 'page10':
+                history.push('/react/page10');
+                break;
+
             default:
                 history.push(`/404`);
                 break;
@@ -111,6 +119,14 @@ export default class NavBar extends React.Component {
 
                 <Menu.Item key="page8">
                     <Icon type="file-pdf"/>Page 8
+                </Menu.Item>
+
+                <Menu.Item key="page9">
+                    <Icon type="file-pdf"/>Page 9
+                </Menu.Item>
+
+                <Menu.Item key="page10">
+                    <Icon type="file-pdf"/>Page 10
                 </Menu.Item>
 
                 <SubMenu title={<span><Icon type="setting"/>Navigation Three - Submenu</span>}>
