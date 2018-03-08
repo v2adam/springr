@@ -1,6 +1,7 @@
 package com.springr.first.service.processXls;
 
 import com.springr.first.domain.MyFirstRowEntity;
+import com.springr.first.exceptions.StorageException;
 import com.springr.first.repo.MyFirstRowRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -48,7 +50,6 @@ public class MyFirstRowServiceImpl implements MyFirstRowService {
         return modelMapper.map(source, entityListType);
     }
 
-    @Override
     @Transactional
     public void delete(Long id) {
         try {
@@ -57,5 +58,43 @@ public class MyFirstRowServiceImpl implements MyFirstRowService {
             throw new EmptyResultDataAccessException("Error while deleting id=" + id, 1);
         }
     }
+
+    @Transactional
+    public MyFirstRowDTO save(MyFirstRowDTO myFirstRowDTO) {
+        MyFirstRowEntity newOne;
+
+        try {
+            newOne = myFirstRowRepository.save(modelMapper.map(myFirstRowDTO, MyFirstRowEntity.class));
+        } catch (RuntimeException e) {
+            throw new StorageException("Baj van");
+        }
+
+        return modelMapper.map(newOne, MyFirstRowDTO.class);
+    }
+
+    @Override
+    @Transactional
+    public void patch(Long id, List<Map<String, Object>> updates) {
+
+        MyFirstRowEntity found;
+
+        try {
+            found = myFirstRowRepository.findOne(id);
+            for (Map<String, Object> one : updates) {
+                log.info(one.toString());
+                Object operation = one.get("op");
+                switch (operation.toString()) {
+                    case "replace":
+                        found.setSomeField(Integer.valueOf(one.get("value").toString()));
+                        break;
+                    default:
+                        break;
+                }
+            }
+        } catch (RuntimeException e) {
+            throw new StorageException("Error while patching id=" + id);
+        }
+    }
+
 
 }

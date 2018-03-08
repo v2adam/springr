@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
 import axios from 'axios';
 import _ from 'lodash';
-import {Button, Divider, Icon, message, Modal, Table, Upload} from 'antd';
+import {Button, Divider, Icon, message, Modal, Table, Upload, Switch } from 'antd';
 import ErrorBoundary from "../../components/ErrorBoundary";
-
+import EditableCell from "./components/EditableCell"
 const confirm = Modal.confirm;
 
 
@@ -14,16 +14,29 @@ class Page10 extends Component {
         this.state = {
             loadingBtn: false,
             loadingTable: false,
+            editorMode: true,
             selectedRowKeys: [],
             fileList: [],
             header: [],
             rows: [],
+            beforeEdit: '',
             columns: [{
                 dataIndex: 'id',
                 title: 'id',
             }, {
                 dataIndex: 'someField',
                 title: 'somesomeFieldID',
+                style: 'padding-right: 24px',
+                render: (text, record) => (
+                    this.state.editorMode ?
+                    <EditableCell
+                      value={text}
+                      storeBeforeEditValue={this.storeBeforeEditValue}
+                      onChange={this.onCellChange(record.id, 'someField')}
+                    />
+                    :
+                    text
+                  ),
             }, {
                 dataIndex: 'issueId',
                 title: 'issueId',
@@ -77,6 +90,59 @@ class Page10 extends Component {
         }
         ;
     }
+
+    storeBeforeEditValue = (val) => {
+        this.setState({beforeEdit: val});
+    }
+
+
+    onCellChange = (key, dataIndex) => {
+        return (value) => {           
+            this.updateCell(key, dataIndex, value);
+          };
+      }
+
+
+    updateCell = async (key, dataIndex, value) => {
+        await this.setState({loadingTable: true});
+        try {
+            const opts = {
+                headers: {
+                    'Content-Type': 'application/json-patch+json',
+                }
+            };
+
+            const payload = [
+                {op: "replace", path: `/${dataIndex}`, value: value}
+            ];
+
+            const res = await axios.patch(`/my_api/my_first_xls/${key}`, payload, opts);
+            await this.setState({loadingTable: false});
+            message.success(`Record patched successfully`);
+        } catch (error) {
+            await this.setState({loadingTable: false, });
+/*
+            console.log(this.state.beforeEdit);
+            const dataSource = [...this.state.rows];
+            const target = dataSource.find(item => item.id === key);
+            if (target) {
+              target[dataIndex] = this.state.beforeEdit;
+              console.log(target);
+
+              this.setState({ rows: target });
+            }
+            
+*/
+
+            if(error.response.status === 400){
+                message.error(`${error.response.data.apierror.message}`);
+            } else{
+                message.error(`Something gone wrong`);
+            }
+        }
+    };
+
+    
 
     deleteSelectedRow = async (record) => {
         await this.setState({loadingTable: true});
@@ -168,6 +234,7 @@ class Page10 extends Component {
         this.setState({selectedRowKeys});
     }
 
+
     render() {
 
         const rowSelection = {
@@ -177,18 +244,22 @@ class Page10 extends Component {
         return (
 
             <ErrorBoundary>
-                <Upload name={"file"}
-                        action={"/my_api/files/upload/xls"}
-                        onChange={this.onFileUploadChange}
-                        multiple={false}
-                        fileList={this.state.fileList}
-                        accept={"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}>
-                    <Button type="primary" loading={this.state.loading}>
-                        <Icon type="upload"/>Upload Xls
-                    </Button>
-                </Upload>
+                <span>
+                    <Upload name={"file"}
+                            action={"/my_api/files/upload/xls"}
+                            onChange={this.onFileUploadChange}
+                            multiple={false}
+                            fileList={this.state.fileList}
+                            accept={"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}>
+                        <Button type="primary" loading={this.state.loading}>
+                            <Icon type="upload"/>Upload Xls
+                        </Button>
+                    </Upload>
+                </span>
                 <Table
                     rowKey='id'
+                    title={() => 'Header'}
+                    footer={() => 'Footer'}
                     dataSource={this.state.rows}
                     columns={this.state.columns}
                     rowSelection={rowSelection}
