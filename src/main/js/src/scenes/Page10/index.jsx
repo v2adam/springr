@@ -1,10 +1,21 @@
 import React, {Component} from 'react';
 import axios from 'axios';
 import _ from 'lodash';
-import {Button, Divider, Icon, message, Modal, Table, Upload, Switch } from 'antd';
+import {Button, Divider, Icon, Input, message, Modal, Popconfirm, Table, Upload} from 'antd';
 import ErrorBoundary from "../../components/ErrorBoundary";
-import EditableCell from "./components/EditableCell"
+import './style.css';
+
 const confirm = Modal.confirm;
+
+
+const EditableCell = ({editable, value, onChange}) => (
+    <div>
+        {editable
+            ? <Input style={{margin: '-5px 0'}} value={value} onChange={e => onChange(e.target.value)}/>
+            : value
+        }
+    </div>
+);
 
 
 class Page10 extends Component {
@@ -14,35 +25,24 @@ class Page10 extends Component {
         this.state = {
             loadingBtn: false,
             loadingTable: false,
-            editorMode: true,
             selectedRowKeys: [],
             fileList: [],
             header: [],
             rows: [],
-            beforeEdit: '',
             columns: [{
                 dataIndex: 'id',
                 title: 'id',
             }, {
                 dataIndex: 'someField',
                 title: 'somesomeFieldID',
-                style: 'padding-right: 24px',
-                render: (text, record) => (
-                    this.state.editorMode ?
-                    <EditableCell
-                      value={text}
-                      storeBeforeEditValue={this.storeBeforeEditValue}
-                      onChange={this.onCellChange(record.id, 'someField')}
-                    />
-                    :
-                    text
-                  ),
+                render: (text, record) => this.renderColumns(text, record, 'someField'),
             }, {
                 dataIndex: 'issueId',
                 title: 'issueId',
             }, {
                 dataIndex: 'valami',
                 title: 'valami',
+                render: (text, record) => this.renderColumns(text, record, 'valami'),
             }, {
                 dataIndex: 'groupId',
                 title: 'groupId',
@@ -72,35 +72,87 @@ class Page10 extends Component {
                 title: 'agree',
             }, {
                 title: 'Action',
-                key: 'action',
-                render: (text, record) => (
-                    <span>
-                    <a href="#">Action 一 {record.id}</a>
-                    <Divider type="vertical"/>
-                    <Button onClick={() => this.showConfirm(record)}>
-                        <Icon type="delete"/>
-                    </Button>
-                    <Divider type="vertical"/>
-                    <a href="#" className="ant-dropdown-link">
-                      More actions <Icon type="down"/>
-                    </a>
-                  </span>
-                ),
+                dataIndex: 'action',
+                render: (text, record) => {
+                    const {editable} = record;
+                    return (
+                        <div className="editable-row-operations">
+                            {
+                                editable ?
+                                    <span>
+                                        <Button onClick={() => this.save(record.id)}>
+                                            <Icon type="save"/>
+                                        </Button>
+                                        <Divider type="vertical"/>
+                                      <Popconfirm title="Sure to cancel?" onConfirm={() => this.cancel(record.id)}>
+                                          <Button>
+                                            <Icon type="close"/>
+                                          </Button>
+                                      </Popconfirm>
+                                    </span>
+                                    : <Button onClick={() => this.edit(record.id)}>
+                                        <Icon type="edit"/>
+                                    </Button>
+                            }
+                            <Divider type="vertical"/>
+                            <Button onClick={() => this.showConfirm(record)}>
+                                <Icon type="delete"/>
+                            </Button>
+                        </div>
+                    );
+                },
             }]
+        };
+        this.cacheData = this.state.rows.map(item => ({...item}));
+    }
+
+    renderColumns = (text, record, column) => {
+        return (
+            <EditableCell
+                editable={record.editable}
+                value={text}
+                onChange={value => this.handleChange(value, record.id, column)}
+            />
+        );
+    };
+
+    handleChange = (value, key, column) => {
+        const newData = [...this.state.rows];
+        const target = newData.filter(item => key === item.id)[0];
+        if (target) {
+            target[column] = value;
+            this.setState({rows: newData});
         }
-        ;
-    }
+    };
 
-    storeBeforeEditValue = (val) => {
-        this.setState({beforeEdit: val});
-    }
+    edit = (key) => {
+        const newData = [...this.state.rows];
+        const target = newData.filter(item => key === item.id)[0];
+        if (target) {
+            target.editable = true;
+            this.setState({rows: newData});
+        }
+    };
 
+    save = (key) => {
+        const newData = [...this.state.rows];
+        const target = newData.filter(item => key === item.id)[0];
+        if (target) {
+            delete target.editable;
+            this.setState({rows: newData});
+            this.cacheData = newData.map(item => ({...item}));
+        }
+    };
 
-    onCellChange = (key, dataIndex) => {
-        return (value) => {           
-            this.updateCell(key, dataIndex, value);
-          };
-      }
+    cancel = (key) => {
+        const newData = [...this.state.rows];
+        const target = newData.filter(item => key === item.id)[0];
+        if (target) {
+            Object.assign(target, this.cacheData.filter(item => key === item.id)[0]);
+            delete target.editable;
+            this.setState({data: newData});
+        }
+    };
 
 
     updateCell = async (key, dataIndex, value) => {
@@ -120,29 +172,15 @@ class Page10 extends Component {
             await this.setState({loadingTable: false});
             message.success(`Record patched successfully`);
         } catch (error) {
-            await this.setState({loadingTable: false, });
-/*
-            console.log(this.state.beforeEdit);
-            const dataSource = [...this.state.rows];
-            const target = dataSource.find(item => item.id === key);
-            if (target) {
-              target[dataIndex] = this.state.beforeEdit;
-              console.log(target);
-
-              this.setState({ rows: target });
-            }
-            
-*/
-
-            if(error.response.status === 400){
+            await this.setState({loadingTable: false,});
+            if (error.response.status === 400) {
                 message.error(`${error.response.data.apierror.message}`);
-            } else{
+            } else {
                 message.error(`Something gone wrong`);
             }
         }
     };
 
-    
 
     deleteSelectedRow = async (record) => {
         await this.setState({loadingTable: true});
@@ -156,9 +194,9 @@ class Page10 extends Component {
             this.setState({rows: _.pull(this.state.rows, record), loadingTable: false});
             message.success(`Record deleted successfully`);
         } catch (error) {
-            if(error.response.status === 404){
+            if (error.response.status === 404) {
                 message.error(`${error.response.data.apierror.message}`);
-            } else{
+            } else {
                 message.error(`Something gone wrong`);
             }
             await this.setState({loadingTable: false});
@@ -169,7 +207,7 @@ class Page10 extends Component {
     showConfirm = (record) => {
         confirm({
             title: 'Are you sure you want to delete record?',
-            content: `The ID is ${record.id}` ,
+            content: `The ID is ${record.id}`,
             onOk: () => this.deleteSelectedRow(record),
             onCancel() {
                 console.log('Cancel');
@@ -232,7 +270,7 @@ class Page10 extends Component {
     onSelectChange = (selectedRowKeys, selectedRows) => {
         console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
         this.setState({selectedRowKeys});
-    }
+    };
 
 
     render() {
