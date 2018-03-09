@@ -46,7 +46,7 @@ public class MyFirstRowController {
     @RequestMapping(value = "my_first_xls/{id}", method = RequestMethod.PATCH, consumes = "application/json-patch+json")
     public ResponseEntity<?> patch(@PathVariable("id") Long id, @RequestBody List<Map<String, Object>> updates) {
         myFirstRowService.patch(id, updates);
-        return ResponseEntity.ok("resource address updated");
+        return ResponseEntity.ok().build();
     }
 
 

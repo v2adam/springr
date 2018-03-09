@@ -189,7 +189,11 @@ class Page10 extends Component {
             // módosításokat mappelem a patch payload-á
             const foundChanges = this.state.changedRows.filter(item => (key === item.id));
             const payload = foundChanges.map(one => {
-                return {op: _.isEmpty(one.value) ? 'delete' : 'replace', path: `/${one.column}`, value: one.value}
+                if(_.isEmpty(one.value)){
+                    return {op: 'delete', path: `/${one.column}`}
+                }else{
+                    return {op: 'replace', path: `/${one.column}`, value: one.value}
+                }
             });
 
             const res = await axios.patch(`/my_api/my_first_xls/${key}`, payload, opts);

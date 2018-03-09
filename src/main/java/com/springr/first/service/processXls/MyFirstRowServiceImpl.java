@@ -83,9 +83,38 @@ public class MyFirstRowServiceImpl implements MyFirstRowService {
             for (Map<String, Object> one : updates) {
                 log.info(one.toString());
                 Object operation = one.get("op");
+                String field = one.get("path").toString().replace('/', ' ').trim();
+
                 switch (operation.toString()) {
                     case "replace":
-                        found.setSomeField(Integer.valueOf(one.get("value").toString()));
+                        Object value = one.get("value");
+                        switch (field) {
+                            case "someField":
+                                found.setSomeField(Integer.valueOf(value.toString()));
+                                break;
+
+                            case "valami":
+                                found.setValami(Integer.valueOf(value.toString()));
+                                break;
+
+                            default:
+                                break;
+                        }
+                        break;
+
+                    case "delete":
+                        switch (field) {
+                            case "someField":
+                                found.setSomeField(null);
+                                break;
+
+                            case "valami":
+                                found.setValami(null);
+                                break;
+
+                            default:
+                                break;
+                        }
                         break;
                     default:
                         break;
