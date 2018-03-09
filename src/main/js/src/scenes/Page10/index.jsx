@@ -30,6 +30,7 @@ class Page10 extends Component {
             header: [],
             rows: [],
             changedRows: [],
+            beforeChangeRows: [],
             columns: [{
                 dataIndex: 'id',
                 title: 'id',
@@ -150,19 +151,40 @@ class Page10 extends Component {
         const target = newData.filter(item => key === item.id)[0];
         if (target) {
             target.editable = true;
-            this.setState({rows: newData});
+            const a = this.state.beforeChangeRows.slice();
+            a.push(target);
+            this.setState({rows: newData, beforeChangeRows: Object.assign([], a)});
         }
     };
 
     save = (key) => {
         const newData = [...this.state.rows];
+        const _beforeChangeRows = [...this.state.beforeChangeRows];
         const target = newData.filter(item => key === item.id)[0];
-        console.log(target);
+
         if (target) {
             delete target.editable;
-            this.setState({rows: newData});
-            this.cacheData = newData.map(item => ({...item}));
-            this.updateCell(key);
+
+            // ha hiba van, akkor a backup-ból tölti vissza a sort
+            this.updateCell(key).then(() => {
+                this.setState({rows: newData});
+                this.cacheData = newData.map(item => ({...item}));
+            }).catch((keyT) => {
+                // megkeresem a backup-ot
+                const findBackUp = _beforeChangeRows.filter(item => keyT === item.id)[0];
+
+                // kiveszem a hibás sort
+                const removed = _.pull(newData, target);
+
+                // berakom a backup-ot
+                removed.push(findBackUp);
+
+                // kitörlöm a backup-ot
+                const updateBeforeChangeRows = _beforeChangeRows.filter(item => keyT !== item.id);
+
+                this.setState({rows: removed, beforeChangeRows: Object.assign([], updateBeforeChangeRows)});
+                this.cacheData = removed.map(item => ({...item}));
+            });
         }
     };
 
@@ -189,9 +211,9 @@ class Page10 extends Component {
             // módosításokat mappelem a patch payload-á
             const foundChanges = this.state.changedRows.filter(item => (key === item.id));
             const payload = foundChanges.map(one => {
-                if(_.isEmpty(one.value)){
+                if (_.isEmpty(one.value)) {
                     return {op: 'delete', path: `/${one.column}`}
-                }else{
+                } else {
                     return {op: 'replace', path: `/${one.column}`, value: one.value}
                 }
             });
@@ -202,8 +224,13 @@ class Page10 extends Component {
 
             // kiveszem ha sikerült
             const all = this.state.changedRows.slice();
-            this.setState({changedRows: all.filter(item => (key !== item.id))});
+            const updateBeforeChangeRows = this.state.beforeChangeRows.filter(item => key !== item.id);
+            this.setState({
+                changedRows: all.filter(item => (key !== item.id)),
+                beforeChangeRows: Object.assign([], updateBeforeChangeRows)
+            });
 
+            return;
 
         } catch (error) {
             await this.setState({loadingTable: false,});
@@ -212,10 +239,12 @@ class Page10 extends Component {
             } else {
                 message.error(`Something gone wrong`);
             }
+
+            throw key;
         }
     };
 
-
+    // TODO: backup-ból eltávolítani
     deleteSelectedRow = async (record) => {
         await this.setState({loadingTable: true});
         try {
@@ -237,7 +266,6 @@ class Page10 extends Component {
         }
     };
 
-
     showConfirm = (record) => {
         confirm({
             title: 'Are you sure you want to delete record?',
@@ -248,7 +276,6 @@ class Page10 extends Component {
             },
         });
     };
-
 
     // kell egy mappelés, hogy a header key-ei alapján legyen összerendelés a cellákban
     mapToHeaderKey = (one, i) => {
@@ -299,7 +326,6 @@ class Page10 extends Component {
         this.setState({fileList});
 
     };
-
 
     onSelectChange = (selectedRowKeys, selectedRows) => {
         console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
