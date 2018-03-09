@@ -29,7 +29,7 @@ class Page10 extends Component {
             fileList: [],
             header: [],
             rows: [],
-            beforeEditRows: [],
+            changedRows: [],
             columns: [{
                 dataIndex: 'id',
                 title: 'id',
