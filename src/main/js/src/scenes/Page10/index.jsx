@@ -29,6 +29,7 @@ class Page10 extends Component {
             fileList: [],
             header: [],
             rows: [],
+            beforeEditRows: [],
             columns: [{
                 dataIndex: 'id',
                 title: 'id',
@@ -116,12 +117,31 @@ class Page10 extends Component {
         );
     };
 
+    // [{id, oszlop, értéke},{id, oszlop, értéke}]
+    storeValueChanges = (value, key, column) => {
+        const found = this.state.changedRows.find(item => (key === item.id && column === item.column));
+        if (found) {
+            const all = this.state.changedRows.slice();
+            const withoutFound = _.pull(all, found);
+            found.value = value;
+            withoutFound.push(found);
+            this.setState({changedRows: withoutFound});
+        } else {
+            const newOne = {id: key, column: column, value: value};
+            const all = this.state.changedRows.slice();
+            all.push(newOne);
+            this.setState({changedRows: all});
+        }
+    };
+
+
     handleChange = (value, key, column) => {
         const newData = [...this.state.rows];
         const target = newData.filter(item => key === item.id)[0];
         if (target) {
             target[column] = value;
             this.setState({rows: newData});
+            this.storeValueChanges(value, key, column);
         }
     };
 
@@ -137,10 +157,12 @@ class Page10 extends Component {
     save = (key) => {
         const newData = [...this.state.rows];
         const target = newData.filter(item => key === item.id)[0];
+        console.log(target);
         if (target) {
             delete target.editable;
             this.setState({rows: newData});
             this.cacheData = newData.map(item => ({...item}));
+            this.updateCell(key);
         }
     };
 
@@ -155,7 +177,7 @@ class Page10 extends Component {
     };
 
 
-    updateCell = async (key, dataIndex, value) => {
+    updateCell = async (key) => {
         await this.setState({loadingTable: true});
         try {
             const opts = {
@@ -164,16 +186,24 @@ class Page10 extends Component {
                 }
             };
 
-            const payload = [
-                {op: "replace", path: `/${dataIndex}`, value: value}
-            ];
+            // módosításokat mappelem a patch payload-á
+            const foundChanges = this.state.changedRows.filter(item => (key === item.id));
+            const payload = foundChanges.map(one => {
+                return {op: _.isEmpty(one.value) ? 'delete' : 'replace', path: `/${one.column}`, value: one.value}
+            });
 
             const res = await axios.patch(`/my_api/my_first_xls/${key}`, payload, opts);
             await this.setState({loadingTable: false});
             message.success(`Record patched successfully`);
+
+            // kiveszem ha sikerült
+            const all = this.state.changedRows.slice();
+            this.setState({changedRows: all.filter(item => (key !== item.id))});
+
+
         } catch (error) {
             await this.setState({loadingTable: false,});
-            if (error.response.status === 400) {
+            if (error.response.status === 500) {
                 message.error(`${error.response.data.apierror.message}`);
             } else {
                 message.error(`Something gone wrong`);
